@@ -27,7 +27,7 @@ import java.io.InputStream;
  * @author Artie Copeland
  * @version $Revision: $
  */
-public class JmsQueueActiveMqBlobPublishConsumer implements IPublishConsumer, MessageListener, IPublishConsumer {
+public class JmsQueueActiveMqBlobPublishConsumer implements IPublishConsumer, MessageListener {
     final private static Logger logger = LoggerFactory.getLogger(JmsQueueActiveMqBlobPublishConsumer.class);
     private IPublishProcessor processor;
 

@@ -19,7 +19,7 @@ import org.joda.time.DateTime;
  * @author Artie Copeland
  * @version $Revision: $
  */
-public class ArtifactMetaData<O, I> implements IArtifactMetaData<O, I> {
+public class ArtifactMetaData<O extends IArtifactOwner, I> implements IArtifactMetaData<O, I> {
     private String mimeType;
     private String fileName;
     private long size;
