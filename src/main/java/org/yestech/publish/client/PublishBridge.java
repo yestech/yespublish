@@ -25,7 +25,7 @@ import java.net.URL;
  * @author Artie Copeland
  * @version $Revision: $
  */
-public class PublishBridge {
+public class PublishBridge implements IPublishBridge {
     final private static Logger logger = LoggerFactory.getLogger(PublishBridge.class);
     public IPublishProducer producer;
 
