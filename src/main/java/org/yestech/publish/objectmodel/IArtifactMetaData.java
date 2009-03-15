@@ -21,7 +21,7 @@ import java.io.Serializable;
  * @author Artie Copeland
  * @version $Revision: $
  */
-public interface IArtifactMetaData<O, I> extends Serializable {
+public interface IArtifactMetaData<O extends IArtifactOwner, I> extends Serializable {
     I getIdentifier();
 
     void setIdentifier(I identifier);
