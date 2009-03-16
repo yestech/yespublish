@@ -20,5 +20,6 @@ package org.yestech.publish.objectmodel;
 public enum ArtifactType {
     IMAGE,
     VIDEO,
+    AUDIO,
     TEXT
 }

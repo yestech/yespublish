@@ -13,10 +13,14 @@
  */
 package org.yestech.publish.publisher;
 
+import static org.apache.commons.io.FileUtils.openOutputStream;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.yestech.publish.objectmodel.ArtifactType;
 import org.yestech.publish.objectmodel.IArtifactMetaData;
+import org.yestech.publish.objectmodel.ProducerArtifactType;
+import org.springframework.beans.factory.annotation.Required;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -24,11 +28,14 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
+ * Writes to the Local FileSystem.  It doesnt remove the original file.
+ *
  * @author Artie Copeland
  * @version $Revision: $
  */
-public class FileSystemPublisher implements IPublisher {
-    final private static Logger logger = LoggerFactory.getLogger(FileSystemPublisher.class);
+@ProducerArtifactType(type = {ArtifactType.IMAGE, ArtifactType.VIDEO, ArtifactType.TEXT, ArtifactType.AUDIO})
+public class LocalFileSystemPublisher implements IPublisher {
+    final private static Logger logger = LoggerFactory.getLogger(LocalFileSystemPublisher.class);
 
     private File directory;
 
@@ -36,6 +43,7 @@ public class FileSystemPublisher implements IPublisher {
         return directory;
     }
 
+    @Required
     public void setDirectory(File directory) {
         this.directory = directory;
     }
@@ -43,13 +51,10 @@ public class FileSystemPublisher implements IPublisher {
     @Override
     public void publish(IArtifactMetaData metaData, InputStream artifact) {
         File fullPath = new File(directory + File.separator + metaData.getOwner().getIdentifier());
-        if (!fullPath.exists()) {
-            fullPath.mkdirs();
-        }
         String location = fullPath.getAbsolutePath() + File.separator + metaData.getFileName() + System.currentTimeMillis();
         FileOutputStream outputStream = null;
         try {
-            outputStream = new FileOutputStream(location);
+            outputStream = openOutputStream(new File(location));
             IOUtils.copyLarge(artifact, outputStream);
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
