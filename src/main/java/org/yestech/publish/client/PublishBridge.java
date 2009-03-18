@@ -18,6 +18,8 @@ import org.slf4j.LoggerFactory;
 import org.yestech.publish.objectmodel.IArtifactMetaData;
 import org.yestech.publish.objectmodel.ArtifactType;
 import org.yestech.publish.service.IPublishProducer;
+import org.apache.commons.io.FileUtils;
+import static org.apache.commons.io.FileUtils.openInputStream;
 
 import java.io.*;
 import java.net.URL;
@@ -57,8 +59,8 @@ public class PublishBridge implements IPublishBridge {
 
     public void publish(IArtifactMetaData metaData, File artifact) {
         try {
-            publish(metaData, new FileInputStream(artifact));
-        } catch (FileNotFoundException e) {
+            publish(metaData, openInputStream(artifact));
+        } catch (IOException e) {
             logger.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }

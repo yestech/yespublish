@@ -16,8 +16,6 @@ package org.yestech.publish.service;
 import org.yestech.publish.objectmodel.IArtifactMetaData;
 import org.apache.commons.io.IOUtils;
 
-import java.io.InputStream;
-
 /**
  * Doesnt do anything but close the {@link java.io.InputStream}
  *
@@ -26,7 +24,7 @@ import java.io.InputStream;
  */
 public class NoOpPublishProducer implements IPublishProducer {
     @Override
-    public void send(IArtifactMetaData metaData, InputStream artifact) {
+    public void send(IArtifactMetaData metaData, File artifact) {
         IOUtils.closeQuietly(artifact);
     }
 }

@@ -13,32 +13,34 @@
  */
 package org.yestech.publish.service;
 
-import org.yestech.publish.objectmodel.IArtifactMetaData;
-import org.yestech.publish.IPublishConstant;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
-import org.apache.activemq.BlobMessage;
-import org.apache.activemq.ActiveMQSession;
+import static org.yestech.lib.xml.XmlUtils.toXml;
+import org.yestech.publish.IPublishConstant;
+import org.yestech.publish.objectmodel.IArtifactMetaData;
 
-import javax.jms.Queue;
-import javax.jms.Message;
-import javax.jms.Session;
-import javax.jms.JMSException;
-import java.io.InputStream;
+import javax.jms.*;
+import java.io.File;
 
 /**
  * @author Artie Copeland
  * @version $Revision: $
  */
 public class JmsQueueActiveMqBlobPublishProducer implements IPublishProducer {
+    final private static Logger logger = LoggerFactory.getLogger(JmsQueueActiveMqBlobPublishProducer.class);
 
     private JmsTemplate jmsTemplate;
     private Queue queue;
+    private String url;
 
     public JmsTemplate getJmsTemplate() {
         return jmsTemplate;
     }
 
+    @Required
     public void setJmsTemplate(JmsTemplate jmsTemplate) {
         this.jmsTemplate = jmsTemplate;
     }
@@ -47,17 +49,29 @@ public class JmsQueueActiveMqBlobPublishProducer implements IPublishProducer {
         return queue;
     }
 
+    @Required
     public void setQueue(Queue queue) {
         this.queue = queue;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    @Required
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     @Override
-    public void send(final IArtifactMetaData metaData, final InputStream artifact) {
-        jmsTemplate.send(queue, new MessageCreator()
-        {
+    public void send(final IArtifactMetaData metaData, final File artifact) {
+        jmsTemplate.send(queue, new MessageCreator() {
             public Message createMessage(Session session) throws JMSException {
-                BlobMessage message = ((ActiveMQSession) session).createBlobMessage(artifact);
-                message.setObjectProperty(IPublishConstant.META_DATA_IDENTIFIER, metaData);
+                TextMessage message = session.createTextMessage();
+                String xmlMetaData = toXml(metaData);
+                message.setText(xmlMetaData);
+                message.setStringProperty(IPublishConstant.FILE_NAME, artifact.getName());
+                message.setStringProperty(IPublishConstant.URL, url);
                 return message;
             }
         });
