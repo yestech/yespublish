@@ -24,6 +24,8 @@ import org.yestech.publish.objectmodel.IArtifactMetaData;
 
 import javax.jms.*;
 import java.io.File;
+import java.io.InputStream;
+import java.net.URL;
 
 /**
  * @author Artie Copeland
@@ -76,5 +78,15 @@ public class JmsQueueActiveMqBlobPublishProducer implements IPublishProducer {
             }
         });
 
+    }
+
+    @Override
+    public void send(IArtifactMetaData metaData, InputStream artifact) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void send(IArtifactMetaData metaData, URL artifact) {
+        throw new UnsupportedOperationException();
     }
 }

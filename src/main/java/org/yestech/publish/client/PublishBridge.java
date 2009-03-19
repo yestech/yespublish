@@ -44,25 +44,21 @@ public class PublishBridge implements IPublishBridge {
     }
 
     public void publish(IArtifactMetaData metaData, InputStream artifact) {
-        IPublishProducer producer = producers.get(metaData.getType());
+        IPublishProducer producer = getProducer(metaData);
         producer.send(metaData, artifact);
     }
 
+    private IPublishProducer getProducer(IArtifactMetaData metaData) {
+        return producers.get(metaData.getType());
+    }
+
     public void publish(IArtifactMetaData metaData, URL artifact) {
-        try {
-            publish(metaData, artifact.openStream());
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-            throw new RuntimeException(e);
-        }
+        IPublishProducer producer = getProducer(metaData);
+        producer.send(metaData, artifact);
     }
 
     public void publish(IArtifactMetaData metaData, File artifact) {
-        try {
-            publish(metaData, openInputStream(artifact));
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-            throw new RuntimeException(e);
-        }
+        IPublishProducer producer = getProducer(metaData);
+        producer.send(metaData, artifact);
     }
 }

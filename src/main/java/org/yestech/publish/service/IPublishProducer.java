@@ -16,6 +16,8 @@ package org.yestech.publish.service;
 import org.yestech.publish.objectmodel.IArtifactMetaData;
 
 import java.io.File;
+import java.io.InputStream;
+import java.net.URL;
 
 /**
  * Sends out a notification that an {@link org.yestech.publish.objectmodel.IArtifactMetaData} needs to be published
@@ -26,4 +28,8 @@ import java.io.File;
 public interface IPublishProducer {
     
     void send(IArtifactMetaData metaData, File artifact);
+
+    void send(IArtifactMetaData metaData, InputStream artifact);
+
+    void send(IArtifactMetaData metaData, URL artifact);
 }

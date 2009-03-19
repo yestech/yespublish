@@ -17,6 +17,8 @@ import org.yestech.publish.objectmodel.IArtifactMetaData;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
+import java.io.InputStream;
+import java.net.URL;
 
 /**
  * Doesnt do anything but close the {@link java.io.InputStream}
@@ -27,5 +29,15 @@ import java.io.File;
 public class NoOpPublishProducer implements IPublishProducer {
     @Override
     public void send(IArtifactMetaData metaData, File artifact) {
+    }
+
+    @Override
+    public void send(IArtifactMetaData metaData, InputStream artifact) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void send(IArtifactMetaData metaData, URL artifact) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 }
