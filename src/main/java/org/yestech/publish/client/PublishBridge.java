@@ -18,8 +18,6 @@ import org.slf4j.LoggerFactory;
 import org.yestech.publish.objectmodel.IArtifactMetaData;
 import org.yestech.publish.objectmodel.ArtifactType;
 import org.yestech.publish.service.IPublishProducer;
-import org.apache.commons.io.FileUtils;
-import static org.apache.commons.io.FileUtils.openInputStream;
 
 import java.io.*;
 import java.net.URL;
@@ -49,7 +47,7 @@ public class PublishBridge implements IPublishBridge {
     }
 
     private IPublishProducer getProducer(IArtifactMetaData metaData) {
-        return producers.get(metaData.getType());
+        return producers.get(metaData.getArtifactType());
     }
 
     public void publish(IArtifactMetaData metaData, URL artifact) {

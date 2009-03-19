@@ -42,7 +42,7 @@ public class DefaultPublishProcessor implements IPublishProcessor {
 
     @Override
     public void process(IArtifactMetaData metaData, InputStream artifact) {
-        IPublisher publisher = publishers.get(metaData.getType());
+        IPublisher publisher = publishers.get(metaData.getArtifactType());
         publisher.publish(metaData, artifact);
     }
 

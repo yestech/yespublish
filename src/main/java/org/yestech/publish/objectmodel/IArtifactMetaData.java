@@ -38,9 +38,9 @@ public interface IArtifactMetaData<O extends IArtifactOwner, I> extends Serializ
 
     void setSize(long size);
 
-    ArtifactType getType();
+    ArtifactType getArtifactType();
 
-    void setType(ArtifactType type);
+    void setArtifactType(ArtifactType type);
 
     void setLocation(String location);
 

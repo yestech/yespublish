@@ -78,11 +78,11 @@ public class ArtifactMetaData<O extends IArtifactOwner, I> implements IArtifactM
         this.size = size;
     }
 
-    public ArtifactType getType() {
+    public ArtifactType getArtifactType() {
         return type;
     }
 
-    public void setType(ArtifactType type) {
+    public void setArtifactType(ArtifactType type) {
         this.type = type;
     }
 

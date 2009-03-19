@@ -20,9 +20,9 @@ import java.io.Serializable;
  * @version $Revision: $
  */
 public interface IArtifactOwner<T extends IArtifactOwnerType, I> extends Serializable {
-     T getType();
+     T getOwnerType();
 
-    void setType(T type);
+    void setOwnerType(T type);
     
     I getIdentifier();
 
