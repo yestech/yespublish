@@ -35,17 +35,6 @@ public class JmsQueuePublishConsumer implements IPublishConsumer, MessageListene
     final private static Logger logger = LoggerFactory.getLogger(JmsQueuePublishConsumer.class);
     private IPublishProcessor processor;
 
-    private File directory;
-
-    public File getDirectory() {
-        return directory;
-    }
-
-    @Required
-    public void setDirectory(File directory) {
-        this.directory = directory;
-    }
-
     public IPublishProcessor getProcessor() {
         return processor;
     }
