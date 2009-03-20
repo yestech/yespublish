@@ -58,8 +58,14 @@ public class LocalFileSystemPublisher implements IPublisher {
         String location = fullPath.getAbsolutePath() + File.separator + UUID.randomUUID() + "_" + metaData.getFileName();
         FileOutputStream outputStream = null;
         try {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Saving file: " + location);
+            }
             outputStream = openOutputStream(new File(location));
             IOUtils.copyLarge(artifact, outputStream);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Saved file: " + location);
+            }
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
         }
