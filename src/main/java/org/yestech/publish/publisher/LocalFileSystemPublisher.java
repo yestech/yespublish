@@ -20,6 +20,8 @@ import org.slf4j.LoggerFactory;
 import org.yestech.publish.objectmodel.ArtifactType;
 import org.yestech.publish.objectmodel.IArtifactMetaData;
 import org.yestech.publish.objectmodel.ProducerArtifactType;
+import org.yestech.publish.util.PublishUtils;
+import static org.yestech.publish.util.PublishUtils.generateUniqueIdentifier;
 import org.springframework.beans.factory.annotation.Required;
 
 import java.io.File;
@@ -51,11 +53,11 @@ public class LocalFileSystemPublisher implements IPublisher {
 
     @Override
     public void publish(IArtifactMetaData metaData, InputStream artifact) {
-        File fullPath = new File(directory + File.separator + metaData.getOwner().getIdentifier());
+        File fullPath = new File(directory + File.separator + generateUniqueIdentifier(metaData.getOwner()));
         if (!fullPath.exists()) {
             fullPath.mkdirs();
         }
-        String location = fullPath.getAbsolutePath() + File.separator + UUID.randomUUID() + "_" + metaData.getFileName();
+        String location = fullPath.getAbsolutePath() + File.separator + generateUniqueIdentifier(metaData);
         FileOutputStream outputStream = null;
         try {
             if (logger.isDebugEnabled()) {
@@ -77,4 +79,6 @@ public class LocalFileSystemPublisher implements IPublisher {
 
         metaData.setLocation(location);
     }
+
+
 }
