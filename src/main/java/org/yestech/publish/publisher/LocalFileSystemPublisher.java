@@ -52,6 +52,9 @@ public class LocalFileSystemPublisher implements IPublisher {
     @Override
     public void publish(IArtifactMetaData metaData, InputStream artifact) {
         File fullPath = new File(directory + File.separator + metaData.getOwner().getIdentifier());
+        if (!fullPath.exists()) {
+            fullPath.mkdirs();
+        }
         String location = fullPath.getAbsolutePath() + File.separator + UUID.randomUUID() + "_" + metaData.getFileName();
         FileOutputStream outputStream = null;
         try {
