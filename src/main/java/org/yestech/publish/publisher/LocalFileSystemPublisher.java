@@ -63,6 +63,7 @@ public class LocalFileSystemPublisher implements IPublisher {
             }
             outputStream = openOutputStream(new File(location));
             IOUtils.copyLarge(artifact, outputStream);
+            outputStream.flush();
             if (logger.isDebugEnabled()) {
                 logger.debug("Saved file: " + location);
             }
