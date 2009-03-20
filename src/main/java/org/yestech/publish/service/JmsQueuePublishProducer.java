@@ -31,8 +31,8 @@ import java.net.URL;
  * @author Artie Copeland
  * @version $Revision: $
  */
-public class JmsQueueActiveMqBlobPublishProducer implements IPublishProducer {
-    final private static Logger logger = LoggerFactory.getLogger(JmsQueueActiveMqBlobPublishProducer.class);
+public class JmsQueuePublishProducer implements IPublishProducer {
+    final private static Logger logger = LoggerFactory.getLogger(JmsQueuePublishProducer.class);
 
     private JmsTemplate jmsTemplate;
     private Queue queue;
