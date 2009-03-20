@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.UUID;
 
 /**
  * Writes to the Local FileSystem.  It doesnt remove the original file.
@@ -51,7 +52,7 @@ public class LocalFileSystemPublisher implements IPublisher {
     @Override
     public void publish(IArtifactMetaData metaData, InputStream artifact) {
         File fullPath = new File(directory + File.separator + metaData.getOwner().getIdentifier());
-        String location = fullPath.getAbsolutePath() + File.separator + metaData.getFileName() + System.currentTimeMillis();
+        String location = fullPath.getAbsolutePath() + File.separator + UUID.randomUUID() + "_" + metaData.getFileName();
         FileOutputStream outputStream = null;
         try {
             outputStream = openOutputStream(new File(location));
