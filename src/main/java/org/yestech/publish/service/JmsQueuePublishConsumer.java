@@ -13,6 +13,7 @@
  */
 package org.yestech.publish.service;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
@@ -23,7 +24,6 @@ import org.yestech.publish.objectmodel.IArtifactMetaData;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
-import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 
@@ -53,13 +53,24 @@ public class JmsQueuePublishConsumer implements IPublishConsumer, MessageListene
                 String fileName = textMessage.getStringProperty(IPublishConstant.FILE_NAME);
                 String xmlMetaData = textMessage.getText();
                 IArtifactMetaData metaData = fromXml(xmlMetaData);
-                fileLocation = url + "/" + fileName;
+                fileLocation = createUrl(url, fileName);
                 URL artifactUrl = new URL(fileLocation);
                 recieve(metaData, artifactUrl.openStream());
             } catch (Exception e) {
                 logger.error("error retrieving file from location: " + fileLocation, e);
             }
         }
+    }
+
+    private String createUrl(String url, String fileName) {
+        String fileLocation = "";
+        if (StringUtils.endsWith(url, "/")) {
+            fileLocation = url + fileName;
+
+        } else {
+            fileLocation = url + "/" + fileName;
+        }
+        return fileLocation;
     }
 
     public void recieve(IArtifactMetaData metaData, InputStream artifact) {
