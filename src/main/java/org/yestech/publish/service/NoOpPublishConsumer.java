@@ -21,7 +21,7 @@ import java.io.InputStream;
  * @author Artie Copeland
  * @version $Revision: $
  */
-public class PublishConsumer implements IPublishConsumer {
+public class NoOpPublishConsumer implements IPublishConsumer {
     @Override
     public void recieve(IArtifactMetaData metaData, InputStream artifact) {
     }
