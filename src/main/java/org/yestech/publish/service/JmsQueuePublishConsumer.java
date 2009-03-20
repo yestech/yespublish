@@ -53,24 +53,13 @@ public class JmsQueuePublishConsumer implements IPublishConsumer, MessageListene
                 String fileName = textMessage.getStringProperty(IPublishConstant.FILE_NAME);
                 String xmlMetaData = textMessage.getText();
                 IArtifactMetaData metaData = fromXml(xmlMetaData);
-                fileLocation = createUrl(url, fileName);
+                fileLocation = url + fileName;
                 URL artifactUrl = new URL(fileLocation);
                 recieve(metaData, artifactUrl.openStream());
             } catch (Exception e) {
                 logger.error("error retrieving file from location: " + fileLocation, e);
             }
         }
-    }
-
-    private String createUrl(String url, String fileName) {
-        String fileLocation = "";
-        if (StringUtils.endsWith(url, "/")) {
-            fileLocation = url + fileName;
-
-        } else {
-            fileLocation = url + "/" + fileName;
-        }
-        return fileLocation;
     }
 
     public void recieve(IArtifactMetaData metaData, InputStream artifact) {
