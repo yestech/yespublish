@@ -17,6 +17,7 @@ import static com.google.common.collect.Maps.newHashMap;
 import org.yestech.publish.objectmodel.ArtifactType;
 import org.yestech.publish.objectmodel.IArtifactMetaData;
 import org.yestech.publish.objectmodel.ProducerArtifactType;
+import org.yestech.publish.objectmodel.IArtifact;
 import org.yestech.publish.publisher.IPublisher;
 
 import java.io.InputStream;
@@ -52,5 +53,11 @@ public class DefaultPublishProcessor implements IPublishProcessor {
 
     public void setPublishers(Map<ArtifactType, IPublisher> publishers) {
         this.publishers = publishers;
+    }
+
+    @Override
+    public void process(IArtifact artifact) {
+        IPublisher publisher = publishers.get(artifact.getArtifactMetaData().getArtifactType());
+        publisher.publish(artifact);
     }
 }

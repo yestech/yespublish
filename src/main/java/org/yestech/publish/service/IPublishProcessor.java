@@ -14,6 +14,7 @@
 package org.yestech.publish.service;
 
 import org.yestech.publish.objectmodel.IArtifactMetaData;
+import org.yestech.publish.objectmodel.IArtifact;
 
 import java.io.InputStream;
 
@@ -23,4 +24,6 @@ import java.io.InputStream;
  */
 public interface IPublishProcessor {
     void process(IArtifactMetaData metaData, InputStream artifact);
+
+    void process(IArtifact artifact);
 }

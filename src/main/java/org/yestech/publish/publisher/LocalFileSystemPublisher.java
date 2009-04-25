@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.yestech.publish.objectmodel.ArtifactType;
 import org.yestech.publish.objectmodel.IArtifactMetaData;
 import org.yestech.publish.objectmodel.ProducerArtifactType;
+import org.yestech.publish.objectmodel.IArtifact;
 import org.yestech.publish.util.PublishUtils;
 import static org.yestech.publish.util.PublishUtils.generateUniqueIdentifier;
 import org.springframework.beans.factory.annotation.Required;
@@ -37,7 +38,7 @@ import java.util.UUID;
  * @version $Revision: $
  */
 @ProducerArtifactType(type = {ArtifactType.IMAGE, ArtifactType.VIDEO, ArtifactType.TEXT, ArtifactType.AUDIO})
-public class LocalFileSystemPublisher implements IPublisher {
+public class LocalFileSystemPublisher extends BasePublisher implements IPublisher {
     final private static Logger logger = LoggerFactory.getLogger(LocalFileSystemPublisher.class);
 
     private File directory;
@@ -79,6 +80,4 @@ public class LocalFileSystemPublisher implements IPublisher {
 
         metaData.setLocation(location);
     }
-
-
 }

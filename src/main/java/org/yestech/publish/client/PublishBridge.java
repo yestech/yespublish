@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yestech.publish.objectmodel.IArtifactMetaData;
 import org.yestech.publish.objectmodel.ArtifactType;
+import org.yestech.publish.objectmodel.IArtifact;
 import org.yestech.publish.service.IPublishProducer;
 
 import java.io.*;
@@ -58,5 +59,11 @@ public class PublishBridge implements IPublishBridge {
     public void publish(IArtifactMetaData metaData, File artifact) {
         IPublishProducer producer = getProducer(metaData);
         producer.send(metaData, artifact);
+    }
+
+    @Override
+    public void publish(IArtifact artifact) {
+        IPublishProducer producer = getProducer(artifact.getArtifactMetaData());
+        producer.send(artifact);
     }
 }

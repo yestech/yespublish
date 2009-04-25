@@ -16,6 +16,7 @@ package org.yestech.publish.publisher;
 import org.yestech.publish.objectmodel.IArtifactMetaData;
 import org.yestech.publish.objectmodel.ProducerArtifactType;
 import org.yestech.publish.objectmodel.ArtifactType;
+import org.yestech.publish.objectmodel.IArtifact;
 
 import java.io.InputStream;
 
@@ -24,10 +25,6 @@ import java.io.InputStream;
  * @version $Revision: $
  */
 @ProducerArtifactType(type = {ArtifactType.IMAGE, ArtifactType.VIDEO, ArtifactType.TEXT,ArtifactType.AUDIO})
-public class CloudFsPublisher implements IPublisher {
+public class CloudFsPublisher extends BasePublisher implements IPublisher {
 
-    @Override
-    public void publish(IArtifactMetaData metaData, InputStream artifact) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
 }

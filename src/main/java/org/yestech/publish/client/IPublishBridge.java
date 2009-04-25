@@ -16,6 +16,7 @@ package org.yestech.publish.client;
 import org.yestech.publish.service.IPublishProducer;
 import org.yestech.publish.objectmodel.IArtifactMetaData;
 import org.yestech.publish.objectmodel.ArtifactType;
+import org.yestech.publish.objectmodel.IArtifact;
 
 import java.io.InputStream;
 import java.io.File;
@@ -33,7 +34,10 @@ public interface IPublishBridge {
 
     void publish(IArtifactMetaData metaData, File artifact);
 
+    void publish(IArtifact artifact);
+
     Map<ArtifactType, IPublishProducer> getProducers();
 
     void setProducers(Map<ArtifactType, IPublishProducer> producers);
+
 }

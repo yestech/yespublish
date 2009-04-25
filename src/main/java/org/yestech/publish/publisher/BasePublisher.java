@@ -24,7 +24,15 @@ import java.io.InputStream;
  * @author Artie Copeland
  * @version $Revision: $
  */
-@ProducerArtifactType(type = {ArtifactType.IMAGE, ArtifactType.VIDEO, ArtifactType.TEXT, ArtifactType.AUDIO})
-public class AmazonS3Publisher extends BasePublisher implements IPublisher {
+public abstract class BasePublisher implements IPublisher {
 
+    @Override
+    public void publish(IArtifactMetaData metaData, InputStream artifact) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void publish(IArtifact artifact) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

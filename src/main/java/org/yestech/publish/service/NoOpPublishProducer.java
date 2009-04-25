@@ -14,6 +14,7 @@
 package org.yestech.publish.service;
 
 import org.yestech.publish.objectmodel.IArtifactMetaData;
+import org.yestech.publish.objectmodel.IArtifact;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
@@ -38,6 +39,11 @@ public class NoOpPublishProducer implements IPublishProducer {
 
     @Override
     public void send(IArtifactMetaData metaData, URL artifact) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void send(IArtifact artifact) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 }

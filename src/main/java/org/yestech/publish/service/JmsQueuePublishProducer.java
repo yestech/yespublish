@@ -21,6 +21,7 @@ import org.springframework.jms.core.MessageCreator;
 import static org.yestech.lib.xml.XmlUtils.toXml;
 import org.yestech.publish.IPublishConstant;
 import org.yestech.publish.objectmodel.IArtifactMetaData;
+import org.yestech.publish.objectmodel.IArtifact;
 
 import javax.jms.*;
 import java.io.File;
@@ -78,6 +79,17 @@ public class JmsQueuePublishProducer implements IPublishProducer {
             }
         });
 
+    }
+
+    @Override
+    public void send(final IArtifact artifact) {
+        jmsTemplate.send(queue, new MessageCreator() {
+            public Message createMessage(Session session) throws JMSException {
+                ObjectMessage message = session.createObjectMessage();
+                message.setObject(artifact);
+                return message;
+            }
+        });
     }
 
     @Override

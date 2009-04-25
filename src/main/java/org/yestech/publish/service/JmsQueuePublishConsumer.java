@@ -20,10 +20,9 @@ import org.springframework.beans.factory.annotation.Required;
 import static org.yestech.lib.xml.XmlUtils.fromXml;
 import org.yestech.publish.IPublishConstant;
 import org.yestech.publish.objectmodel.IArtifactMetaData;
+import org.yestech.publish.objectmodel.IArtifact;
 
-import javax.jms.Message;
-import javax.jms.MessageListener;
-import javax.jms.TextMessage;
+import javax.jms.*;
 import java.io.InputStream;
 import java.net.URL;
 
@@ -59,7 +58,20 @@ public class JmsQueuePublishConsumer implements IPublishConsumer, MessageListene
             } catch (Exception e) {
                 logger.error("error retrieving file from location: " + fileLocation, e);
             }
+        } else if (message instanceof ObjectMessage) {
+            ObjectMessage objMessage = (ObjectMessage) message;
+            try {
+                IArtifact artifact = (IArtifact) objMessage.getObject();
+                recieve(artifact);
+            } catch (JMSException e) {
+                logger.error("error retrieving artifact..." , e);
+            }
         }
+
+    }
+
+    private void recieve(IArtifact artifact) {
+        processor.process(artifact);
     }
 
     public void recieve(IArtifactMetaData metaData, InputStream artifact) {
