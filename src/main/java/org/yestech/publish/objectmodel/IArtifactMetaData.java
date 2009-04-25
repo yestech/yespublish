@@ -26,25 +26,9 @@ public interface IArtifactMetaData<O extends IArtifactOwner, I> extends Serializ
 
     void setIdentifier(I identifier);
 
-    String getMimeType();
-
-    void setMimeType(String mimeType);
-
-    String getFileName();
-
-    void setFileName(String fileName);
-
-    long getSize();
-
-    void setSize(long size);
-
     ArtifactType getArtifactType();
 
     void setArtifactType(ArtifactType type);
-
-    void setLocation(String location);
-
-    String getLocation();
 
     void setOwner(O owner);
 

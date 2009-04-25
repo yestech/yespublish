@@ -28,6 +28,7 @@ import java.util.Map;
  * @author $Author: $
  * @version $Revision: $
  */
+@SuppressWarnings("unchecked")
 public class DefaultPublishProcessor implements IPublishProcessor {
     private Map<ArtifactType, IPublisher> publishers = newHashMap();
 
@@ -58,6 +59,6 @@ public class DefaultPublishProcessor implements IPublishProcessor {
     @Override
     public void process(IArtifact artifact) {
         IPublisher publisher = publishers.get(artifact.getArtifactMetaData().getArtifactType());
-        publisher.publish(artifact);
+        publisher.publish(artifact.getArtifactMetaData(), artifact);
     }
 }

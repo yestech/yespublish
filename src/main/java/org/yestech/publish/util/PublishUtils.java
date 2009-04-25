@@ -15,6 +15,7 @@ package org.yestech.publish.util;
 
 import org.yestech.publish.objectmodel.IArtifactOwner;
 import org.yestech.publish.objectmodel.IArtifactMetaData;
+import org.yestech.publish.objectmodel.IFileArtifactMetaData;
 import org.yestech.lib.crypto.CryptoUtils;
 import org.yestech.lib.crypto.MessageDigestUtils;
 import static org.yestech.lib.crypto.MessageDigestUtils.sha1Hash;
@@ -31,7 +32,7 @@ public class PublishUtils {
         return sha1Hash(owner.getIdentifier().toString());
     }
 
-    public static String generateUniqueIdentifier(IArtifactMetaData metaData) {
+    public static String generateUniqueIdentifier(IFileArtifactMetaData metaData) {
         return sha1Hash(UUID.randomUUID().toString()) + "_" + metaData.getFileName();
     }
 }

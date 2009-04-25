@@ -21,6 +21,7 @@ import org.jmock.Mockery;
 import org.jmock.Expectations;
 import org.yestech.publish.objectmodel.IArtifactOwner;
 import org.yestech.publish.objectmodel.IArtifactMetaData;
+import org.yestech.publish.objectmodel.IFileArtifactMetaData;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -43,7 +44,7 @@ public class PublishUtilsUnitTest {
 
     @Test
     public void testGenerateUniqueIdentifierFromMetaData() {
-        final IArtifactMetaData metaData = context.mock(IArtifactMetaData.class, "metaData");
+        final IFileArtifactMetaData metaData = context.mock(IFileArtifactMetaData.class, "metaData");
         final String fileName = "1.jpg";
         context.checking(new Expectations(){{
             oneOf(metaData).getFileName();

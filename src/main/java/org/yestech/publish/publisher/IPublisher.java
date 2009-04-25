@@ -22,8 +22,6 @@ import java.io.InputStream;
  * @author Artie Copeland
  * @version $Revision: $
  */
-public interface IPublisher {
-    void publish(IArtifactMetaData metaData, InputStream artifact);
-
-    void publish(IArtifact artifact);
+public interface IPublisher<TYPE extends IArtifactMetaData, ARTIFACT> {
+    void publish(TYPE metaData, ARTIFACT artifact);
 }

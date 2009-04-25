@@ -24,14 +24,8 @@ import java.io.InputStream;
  * @author Artie Copeland
  * @version $Revision: $
  */
-public abstract class BasePublisher implements IPublisher {
+public abstract class BasePublisher {
 
-    @Override
-    public void publish(IArtifactMetaData metaData, InputStream artifact) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
     public void publish(IArtifact artifact) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
