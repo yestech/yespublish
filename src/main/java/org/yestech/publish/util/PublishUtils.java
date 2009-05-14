@@ -28,10 +28,26 @@ import java.util.UUID;
  */
 public class PublishUtils {
 
+    /**
+     * Generates a Unique Identifer using the form:
+     * <br/>
+     * sha1({@link org.yestech.publish.objectmodel.IArtifactOwner#getIdentifier()#toString()})
+     *
+     * @param owner The Owner
+     * @return the identifier
+     */
     public static String generateUniqueIdentifier(IArtifactOwner owner) {
         return sha1Hash(owner.getIdentifier().toString());
     }
 
+    /**
+     * Generates a Unique Identifer using the form:
+     * <br/>
+     * sha1({@link UUID#randomUUID}) + "_" + {@link org.yestech.publish.objectmodel.IFileArtifactMetaData#getFileName()}
+     *
+     * @param metaData The metadata
+     * @return the identifier
+     */
     public static String generateUniqueIdentifier(IFileArtifactMetaData metaData) {
         return sha1Hash(UUID.randomUUID().toString()) + "_" + metaData.getFileName();
     }
