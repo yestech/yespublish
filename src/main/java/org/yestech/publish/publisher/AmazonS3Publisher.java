@@ -18,6 +18,11 @@ import static org.apache.commons.io.FileUtils.openOutputStream;
 import org.apache.commons.io.IOUtils;
 import org.jets3t.service.S3Service;
 import org.jets3t.service.S3ServiceException;
+import org.jets3t.service.Constants;
+import org.jets3t.service.acl.AccessControlList;
+import org.jets3t.service.acl.GroupGrantee;
+import org.jets3t.service.acl.Permission;
+import org.jets3t.service.utils.ServiceUtils;
 import org.jets3t.service.impl.rest.httpclient.RestS3Service;
 import org.jets3t.service.model.S3Bucket;
 import org.jets3t.service.model.S3Object;
@@ -29,14 +34,11 @@ import org.yestech.publish.objectmodel.ArtifactType;
 import org.yestech.publish.objectmodel.IFileArtifactMetaData;
 import org.yestech.publish.objectmodel.ProducerArtifactType;
 import static org.yestech.publish.util.PublishUtils.generateUniqueIdentifier;
+import org.yestech.lib.crypto.MessageDigestUtils;
 import org.joda.time.DateTime;
 
 import javax.annotation.PostConstruct;
-import java.io.InputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Date;
+import java.io.*;
 
 /**
  * Publishes to Amazons S3 storage.
@@ -55,6 +57,16 @@ public class AmazonS3Publisher extends BasePublisher implements IPublisher<IFile
     private String bucketName;
     private S3Bucket artifactBucket;
     private String urlPrefix;
+    private File tempDirectory;
+    private static final String HTTP_SEPARATOR = "/";
+
+    public File getTempDirectory() {
+        return tempDirectory;
+    }
+
+    public void setTempDirectory(File tempDirectory) {
+        this.tempDirectory = tempDirectory;
+    }
 
     public String getUrlPrefix() {
         return urlPrefix;
@@ -109,70 +121,65 @@ public class AmazonS3Publisher extends BasePublisher implements IPublisher<IFile
         }
         if (createNewBucket) {
             artifactBucket = s3Service.createBucket(getBucketName());
+            setACLOnBucket();
         }
         if (logger.isDebugEnabled()) {
             logger.debug("Created test bucket: " + artifactBucket.getName());
         }
     }
 
+    private void setACLOnBucket() throws S3ServiceException {
+        AccessControlList bucketAcl = s3Service.getBucketAcl(artifactBucket);
+        bucketAcl.grantPermission(GroupGrantee.ALL_USERS, Permission.PERMISSION_READ);
+        artifactBucket.setAcl(bucketAcl);
+        s3Service.putBucketAcl(artifactBucket);
+    }
+
     @Override
     public void publish(IFileArtifactMetaData metaData, InputStream artifact) {
-        saveToDisk();
-        String artifactName = generateUniqueIdentifier(metaData.getOwner());
-        DateTime lengthOfLink = new DateTime();
-        lengthOfLink.plusYears(20);
+        String artifactDirectoryName = generateUniqueIdentifier(metaData.getOwner());
+        final String uniqueFileName = generateUniqueIdentifier(metaData);
+        final String tempFileFqn = saveToDisk(artifactDirectoryName, artifact, uniqueFileName);
         try {
-//            File
-//            final byte[] bytes = ServiceUtils.computeMD5Hash(artifact);
-//            artifact.reset();
-            S3Object s3Artifact = new S3Object(artifactName);
+            final StringBuilder s3LocationBuilder = new StringBuilder();
+            final String s3Location = s3LocationBuilder.append(artifactDirectoryName).append(Constants.FILE_PATH_DELIM).append(uniqueFileName).toString();
+            S3Object s3Artifact = new S3Object(s3Location);
             s3Artifact.setDataInputStream(artifact);
             s3Artifact.setContentLength(metaData.getSize());
             s3Artifact.setContentType(metaData.getMimeType());
+            s3Artifact.setMd5Hash(ServiceUtils.computeMD5Hash(new FileInputStream(new File(tempFileFqn))));
 
             // Upload the data objects.
             s3Service.putObject(artifactBucket, s3Artifact);
-            S3Service.createSignedGetUrl(artifactBucket.getName(), artifactName, s3Service.getAWSCredentials(), lengthOfLink.toDate());
-            String location = getUrlPrefix();
-            metaData.setLocation(location);
+
+            setFinalLocationInMetaData(metaData, artifactDirectoryName, uniqueFileName);
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
-
-
-//        File fullPath = null; //new File(directory + File.separator + generateUniqueIdentifier(metaData.getOwner()));
-//        if (!fullPath.exists()) {
-//            fullPath.mkdirs();
-//        }
-//        String location = fullPath.getAbsolutePath() + File.separator + generateUniqueIdentifier(metaData);
-//        FileOutputStream outputStream = null;
-//        try {
-//            if (logger.isDebugEnabled()) {
-//                logger.debug("Saving file: " + location);
-//            }
-//            outputStream = openOutputStream(new File(location));
-//            IOUtils.copyLarge(artifact, outputStream);
-//            outputStream.flush();
-//            if (logger.isDebugEnabled()) {
-//                logger.debug("Saved file: " + location);
-//            }
-//        } catch (IOException e) {
-//            logger.error(e.getMessage(), e);
-//        }
-//        finally {
-//            IOUtils.closeQuietly(artifact);
-//            IOUtils.closeQuietly(outputStream);
-//        }
-
+        finally {
+            //clean up temp file
+            File tempFile = new File(tempFileFqn);
+            try {
+                tempFile.delete();
+            } catch (Exception e) {
+                logger.error("error delete tempfile: " + tempFileFqn);
+            }
+        }
     }
 
-    private void saveToDisk() {
-        File fullPath = new File(directory + File.separator + generateUniqueIdentifier(metaData.getOwner()));
+    private void setFinalLocationInMetaData(IFileArtifactMetaData metaData, String artifactDirectoryName, String uniqueFileName) {
+        final StringBuilder builder = new StringBuilder();
+        String location = builder.append(getUrlPrefix()).append(HTTP_SEPARATOR).append(artifactDirectoryName).append(HTTP_SEPARATOR).append(uniqueFileName).toString();
+        metaData.setLocation(location);
+    }
+
+    private String saveToDisk(String artifactDirectoryName, InputStream artifact, String uniqueFileName) {
+        File fullPath = new File(tempDirectory + File.separator + artifactDirectoryName);
         if (!fullPath.exists()) {
             fullPath.mkdirs();
         }
-        String location = fullPath.getAbsolutePath() + File.separator + generateUniqueIdentifier(metaData);
+        String location = fullPath.getAbsolutePath() + File.separator + uniqueFileName;
         FileOutputStream outputStream = null;
         try {
             if (logger.isDebugEnabled()) {
@@ -191,5 +198,6 @@ public class AmazonS3Publisher extends BasePublisher implements IPublisher<IFile
             IOUtils.closeQuietly(artifact);
             IOUtils.closeQuietly(outputStream);
         }
+        return location;
     }
 }
