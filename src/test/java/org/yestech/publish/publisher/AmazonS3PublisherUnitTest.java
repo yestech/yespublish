@@ -16,6 +16,7 @@ package org.yestech.publish.publisher;
 import org.junit.runner.RunWith;
 import org.junit.Test;
 import org.junit.Before;
+import static org.junit.Assert.assertEquals;
 import org.jmock.integration.junit4.JMock;
 import org.jmock.integration.junit4.JUnit4Mockery;
 //import org.jmock.lib.legacy.ClassImposteriser;
@@ -87,12 +88,15 @@ public class AmazonS3PublisherUnitTest {
                 oneOf(fileArtifact).setLocation(with(aNonNull(String.class)));
             }
         });
-        publisher.setS3Service(new MockS3Service(null));
+        final MockS3Service service = new MockS3Service(null);
+        publisher.setS3Service(service);
         publisher.setTempDirectory(tempDir);
         publisher.publish(fileArtifact, stream);
+        assertEquals(AccessControlList.REST_CANNED_PUBLIC_READ, service.getS3Object().getAcl());
     }
 
     private static class MockS3Service extends S3Service {
+        private S3Object s3Object;
         private MockS3Service(AWSCredentials awsCredentials, String s, Jets3tProperties jets3tProperties) throws S3ServiceException {
             super(awsCredentials, s, jets3tProperties);
         }
@@ -217,7 +221,16 @@ public class AmazonS3PublisherUnitTest {
 
         @Override
         public S3Object putObject(S3Bucket s3Bucket, S3Object s3Object) throws S3ServiceException {
-            return null;
+            this.s3Object = s3Object;
+            return s3Object;
+        }
+
+        public S3Object getS3Object() {
+            return s3Object;
+        }
+
+        public void setS3Object(S3Object s3Object) {
+            this.s3Object = s3Object;
         }
     }
 

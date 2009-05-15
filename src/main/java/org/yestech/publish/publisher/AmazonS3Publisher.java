@@ -16,16 +16,19 @@ package org.yestech.publish.publisher;
 import org.apache.commons.lang.StringUtils;
 import static org.apache.commons.io.FileUtils.openOutputStream;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.FileUtils;
 import org.jets3t.service.S3Service;
 import org.jets3t.service.S3ServiceException;
 import org.jets3t.service.Constants;
 import org.jets3t.service.acl.AccessControlList;
 import org.jets3t.service.acl.GroupGrantee;
 import org.jets3t.service.acl.Permission;
+import org.jets3t.service.acl.CanonicalGrantee;
 import org.jets3t.service.utils.ServiceUtils;
 import org.jets3t.service.impl.rest.httpclient.RestS3Service;
 import org.jets3t.service.model.S3Bucket;
 import org.jets3t.service.model.S3Object;
+import org.jets3t.service.model.S3Owner;
 import org.jets3t.service.security.AWSCredentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,8 +37,6 @@ import org.yestech.publish.objectmodel.ArtifactType;
 import org.yestech.publish.objectmodel.IFileArtifactMetaData;
 import org.yestech.publish.objectmodel.ProducerArtifactType;
 import static org.yestech.publish.util.PublishUtils.generateUniqueIdentifier;
-import org.yestech.lib.crypto.MessageDigestUtils;
-import org.joda.time.DateTime;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
@@ -64,6 +65,7 @@ public class AmazonS3Publisher extends BasePublisher implements IPublisher<IFile
         return tempDirectory;
     }
 
+    @Required
     public void setTempDirectory(File tempDirectory) {
         this.tempDirectory = tempDirectory;
     }
@@ -72,6 +74,7 @@ public class AmazonS3Publisher extends BasePublisher implements IPublisher<IFile
         return urlPrefix;
     }
 
+    @Required
     public void setUrlPrefix(String urlPrefix) {
         this.urlPrefix = urlPrefix;
     }
@@ -123,6 +126,7 @@ public class AmazonS3Publisher extends BasePublisher implements IPublisher<IFile
         boolean createNewBucket = true;
         for (S3Bucket bucket : myBuckets) {
             if (StringUtils.equals(getBucketName(), bucket.getName())) {
+                artifactBucket = bucket;
                 createNewBucket = false;
                 break;
             }
@@ -152,12 +156,13 @@ public class AmazonS3Publisher extends BasePublisher implements IPublisher<IFile
             final StringBuilder s3LocationBuilder = new StringBuilder();
             final String s3Location = s3LocationBuilder.append(artifactDirectoryName).append(Constants.FILE_PATH_DELIM).append(uniqueFileName).toString();
             S3Object s3Artifact = new S3Object(s3Location);
-            s3Artifact.setDataInputStream(artifact);
             s3Artifact.setContentLength(metaData.getSize());
             s3Artifact.setContentType(metaData.getMimeType());
 
             s3Artifact.setMd5Hash(ServiceUtils.computeMD5Hash(new FileInputStream(new File(tempFileFqn))));
-            
+            s3Artifact.setDataInputStream(new FileInputStream(new File(tempFileFqn)));
+
+            setCredentials(s3Artifact);
             // Upload the data objects.
             s3Service.putObject(artifactBucket, s3Artifact);
             setFinalLocationInMetaData(metaData, artifactDirectoryName, uniqueFileName);
@@ -167,13 +172,17 @@ public class AmazonS3Publisher extends BasePublisher implements IPublisher<IFile
         }
         finally {
             //clean up temp file
-            File tempFile = new File(tempFileFqn);
             try {
-                tempFile.delete();
+                FileUtils.deleteDirectory(new File(artifactDirectoryName));
             } catch (Exception e) {
                 logger.error("error delete tempfile: " + tempFileFqn);
             }
         }
+    }
+
+    private void setCredentials(S3Object s3Artifact) {
+        //TODO:  added better
+        s3Artifact.setAcl(AccessControlList.REST_CANNED_PUBLIC_READ);
     }
 
     private void setFinalLocationInMetaData(IFileArtifactMetaData metaData, String artifactDirectoryName, String uniqueFileName) {
