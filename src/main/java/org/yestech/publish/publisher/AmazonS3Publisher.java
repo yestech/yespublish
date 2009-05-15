@@ -103,6 +103,14 @@ public class AmazonS3Publisher extends BasePublisher implements IPublisher<IFile
         this.secretKey = secretKey;
     }
 
+    public S3Service getS3Service() {
+        return s3Service;
+    }
+
+    public void setS3Service(S3Service s3Service) {
+        this.s3Service = s3Service;
+    }
+
     @PostConstruct
     public void init() throws S3ServiceException {
         awsCredentials = new AWSCredentials(accessKey, secretKey);
@@ -147,11 +155,11 @@ public class AmazonS3Publisher extends BasePublisher implements IPublisher<IFile
             s3Artifact.setDataInputStream(artifact);
             s3Artifact.setContentLength(metaData.getSize());
             s3Artifact.setContentType(metaData.getMimeType());
-            s3Artifact.setMd5Hash(ServiceUtils.computeMD5Hash(new FileInputStream(new File(tempFileFqn))));
 
+            s3Artifact.setMd5Hash(ServiceUtils.computeMD5Hash(new FileInputStream(new File(tempFileFqn))));
+            
             // Upload the data objects.
             s3Service.putObject(artifactBucket, s3Artifact);
-
             setFinalLocationInMetaData(metaData, artifactDirectoryName, uniqueFileName);
 
         } catch (Exception e) {

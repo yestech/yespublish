@@ -53,6 +53,24 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.jmock</groupId>
+            <artifactId>jmock-legacy</artifactId>
+            <version>2.5.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.objenesis</groupId>
+            <artifactId>objenesis</artifactId>
+            <version>1.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib-nodep</artifactId>
+            <version>2.1_3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-jms_1.1_spec</artifactId>
             <version>1.1.1</version>
@@ -118,10 +136,10 @@
             <version>1.4</version>
         </dependency>
         <dependency>
-              <groupId>net.java.dev.jets3t</groupId>
-              <artifactId>jets3t</artifactId>
-              <version>0.7.1</version>
-            </dependency>
+            <groupId>net.java.dev.jets3t</groupId>
+            <artifactId>jets3t</artifactId>
+            <version>0.7.1</version>
+        </dependency>
         <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>
@@ -181,10 +199,10 @@
             <url>http://repo.yestech.org/content/repositories/thirdparty</url>
         </repository>
         <repository>
-              <name>jets3t</name>
-              <id>jets3t</id>
-              <url>http://jets3t.s3.amazonaws.com/maven2</url>
-            </repository>
+            <name>jets3t</name>
+            <id>jets3t</id>
+            <url>http://jets3t.s3.amazonaws.com/maven2</url>
+        </repository>
     </repositories>
     <distributionManagement>
         <repository>
