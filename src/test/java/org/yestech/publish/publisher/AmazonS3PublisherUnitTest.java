@@ -17,6 +17,7 @@ import org.junit.runner.RunWith;
 import org.junit.Test;
 import org.junit.Before;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.jmock.integration.junit4.JMock;
 import org.jmock.integration.junit4.JUnit4Mockery;
 //import org.jmock.lib.legacy.ClassImposteriser;
@@ -34,6 +35,8 @@ import org.jets3t.service.model.S3BucketLoggingStatus;
 import org.jets3t.service.model.S3Owner;
 import org.yestech.publish.objectmodel.IFileArtifactMetaData;
 import org.yestech.publish.objectmodel.IArtifactOwner;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -93,6 +96,7 @@ public class AmazonS3PublisherUnitTest {
         publisher.setTempDirectory(tempDir);
         publisher.publish(fileArtifact, stream);
         assertEquals(AccessControlList.REST_CANNED_PUBLIC_READ, service.getS3Object().getAcl());
+        assertEquals(0, stream.available());
     }
 
     private static class MockS3Service extends S3Service {
