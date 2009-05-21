@@ -17,11 +17,10 @@ import org.junit.Test;
 import org.junit.Before;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import org.jmock.Mockery;
 import org.jmock.Expectations;
-import org.yestech.publish.objectmodel.IArtifactOwner;
-import org.yestech.publish.objectmodel.IArtifactMetaData;
-import org.yestech.publish.objectmodel.IFileArtifactMetaData;
+import org.yestech.publish.objectmodel.*;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -54,5 +53,23 @@ public class PublishUtilsUnitTest {
         assertEquals(46, id.length());
         String idSuffix = "_" + fileName;
         assertTrue(StringUtils.endsWith(id, idSuffix));
+    }
+
+    @Test
+    public void testFileArtifactNull() {
+        IFileArtifact artifact = null;
+        assertFalse(PublishUtils.isFileArtifact(artifact));
+    }
+
+    @Test
+    public void testFileArtifact() {
+        DefaultFileArtifact artifact = new DefaultFileArtifact();
+        assertTrue(PublishUtils.isFileArtifact(artifact));
+    }
+
+    @Test
+    public void testFileArtifactInvalid() {
+        IArtifact artifact = context.mock(IArtifact.class, "artifact");
+        assertFalse(PublishUtils.isFileArtifact(artifact));
     }
 }

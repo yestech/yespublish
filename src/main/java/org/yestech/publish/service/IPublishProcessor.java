@@ -23,7 +23,6 @@ import java.io.InputStream;
  * @version $Revision: $
  */
 public interface IPublishProcessor {
-    void process(IArtifactMetaData metaData, InputStream artifact);
 
     void process(IArtifact artifact);
 }

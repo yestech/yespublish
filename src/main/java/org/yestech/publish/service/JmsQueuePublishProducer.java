@@ -20,8 +20,11 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 import static org.yestech.lib.xml.XmlUtils.toXml;
 import org.yestech.publish.IPublishConstant;
+import org.yestech.publish.util.PublishUtils;
+import static org.yestech.publish.util.PublishUtils.reset;
 import org.yestech.publish.objectmodel.IArtifactMetaData;
 import org.yestech.publish.objectmodel.IArtifact;
+import org.yestech.publish.objectmodel.IFileArtifact;
 
 import javax.jms.*;
 import java.io.File;
@@ -67,21 +70,6 @@ public class JmsQueuePublishProducer implements IPublishProducer {
     }
 
     @Override
-    public void send(final IArtifactMetaData metaData, final File artifact) {
-        jmsTemplate.send(queue, new MessageCreator() {
-            public Message createMessage(Session session) throws JMSException {
-                TextMessage message = session.createTextMessage();
-                String xmlMetaData = toXml(metaData);
-                message.setText(xmlMetaData);
-                message.setStringProperty(IPublishConstant.FILE_NAME, artifact.getName());
-                message.setStringProperty(IPublishConstant.URL, url);
-                return message;
-            }
-        });
-
-    }
-
-    @Override
     public void send(final IArtifact artifact) {
         jmsTemplate.send(queue, new MessageCreator() {
             public Message createMessage(Session session) throws JMSException {
@@ -93,12 +81,20 @@ public class JmsQueuePublishProducer implements IPublishProducer {
     }
 
     @Override
-    public void send(IArtifactMetaData metaData, InputStream artifact) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void send(IArtifactMetaData metaData, URL artifact) {
-        throw new UnsupportedOperationException();
+    public void send(final IFileArtifact artifact) {
+        final File inputFile = artifact.getFile();
+        if (inputFile == null) {
+            throw new RuntimeException("file can't be null for file artifact");
+        }
+        reset(artifact);
+        jmsTemplate.send(queue, new MessageCreator() {
+            public Message createMessage(Session session) throws JMSException {
+                ObjectMessage message = session.createObjectMessage();
+                message.setObject(artifact);
+                message.setStringProperty(IPublishConstant.FILE_NAME, inputFile.getName());
+                message.setStringProperty(IPublishConstant.URL, url);
+                return message;
+            }
+        });
     }
 }

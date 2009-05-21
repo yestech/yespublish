@@ -33,10 +33,9 @@ import org.jets3t.service.security.AWSCredentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
-import org.yestech.publish.objectmodel.ArtifactType;
-import org.yestech.publish.objectmodel.IFileArtifactMetaData;
-import org.yestech.publish.objectmodel.ProducerArtifactType;
+import org.yestech.publish.objectmodel.*;
 import static org.yestech.publish.util.PublishUtils.generateUniqueIdentifier;
+import org.yestech.publish.util.PublishUtils;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
@@ -48,7 +47,7 @@ import java.io.*;
  * @version $Revision: $
  */
 @ProducerArtifactType(type = {ArtifactType.IMAGE, ArtifactType.VIDEO, ArtifactType.TEXT, ArtifactType.AUDIO})
-public class AmazonS3Publisher extends BasePublisher implements IPublisher<IFileArtifactMetaData, InputStream> {
+public class AmazonS3Publisher extends BasePublisher implements IPublisher<IFileArtifact> {
     final private static Logger logger = LoggerFactory.getLogger(AmazonS3Publisher.class);
 
     private String accessKey;
@@ -148,10 +147,12 @@ public class AmazonS3Publisher extends BasePublisher implements IPublisher<IFile
     }
 
     @Override
-    public void publish(IFileArtifactMetaData metaData, InputStream artifact) {
+    public void publish(IFileArtifact artifact) {
+        IFileArtifactMetaData metaData = artifact.getArtifactMetaData();
+        InputStream artifactStream = artifact.getStream();
         String artifactDirectoryName = generateUniqueIdentifier(metaData.getOwner());
         final String uniqueFileName = generateUniqueIdentifier(metaData);
-        final String tempFileFqn = saveToDisk(artifactDirectoryName, artifact, uniqueFileName);
+        final String tempFileFqn = saveToDisk(artifactDirectoryName, artifactStream, uniqueFileName);
         try {
             final StringBuilder s3LocationBuilder = new StringBuilder();
             final String s3Location = s3LocationBuilder.append(artifactDirectoryName).append(Constants.FILE_PATH_DELIM).append(uniqueFileName).toString();
@@ -177,6 +178,7 @@ public class AmazonS3Publisher extends BasePublisher implements IPublisher<IFile
             } catch (Exception e) {
                 logger.error("error delete tempfile: " + tempFileFqn);
             }
+            PublishUtils.reset(artifact);
         }
     }
 

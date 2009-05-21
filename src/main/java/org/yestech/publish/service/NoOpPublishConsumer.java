@@ -14,6 +14,7 @@
 package org.yestech.publish.service;
 
 import org.yestech.publish.objectmodel.IArtifactMetaData;
+import org.yestech.publish.objectmodel.IArtifact;
 
 import java.io.InputStream;
 
@@ -23,6 +24,7 @@ import java.io.InputStream;
  */
 public class NoOpPublishConsumer implements IPublishConsumer {
     @Override
-    public void recieve(IArtifactMetaData metaData, InputStream artifact) {
+    public void recieve(IArtifact artifact) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 }

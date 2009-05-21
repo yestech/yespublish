@@ -22,10 +22,10 @@ import java.io.InputStream;
  * @version $Revision: $
  */
 @ProducerArtifactType(type = {ArtifactType.IMAGE, ArtifactType.VIDEO, ArtifactType.TEXT,ArtifactType.AUDIO})
-public class CloudFsPublisher extends BasePublisher implements IPublisher<IFileArtifactMetaData, InputStream> {
+public class CloudFsPublisher extends BasePublisher implements IPublisher<IFileArtifact> {
 
     @Override
-    public void publish(IFileArtifactMetaData metaData, InputStream artifact) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void publish(IFileArtifact iFileArtifact) {
+        throw new UnsupportedOperationException();
     }
 }

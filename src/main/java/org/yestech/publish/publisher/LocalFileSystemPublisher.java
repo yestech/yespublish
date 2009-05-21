@@ -35,7 +35,7 @@ import java.util.UUID;
  * @version $Revision: $
  */
 @ProducerArtifactType(type = {ArtifactType.IMAGE, ArtifactType.VIDEO, ArtifactType.TEXT, ArtifactType.AUDIO})
-public class LocalFileSystemPublisher extends BasePublisher implements IPublisher<IFileArtifactMetaData, InputStream> {
+public class LocalFileSystemPublisher extends BasePublisher implements IPublisher<IFileArtifact> {
     final private static Logger logger = LoggerFactory.getLogger(LocalFileSystemPublisher.class);
 
     private File directory;
@@ -49,7 +49,10 @@ public class LocalFileSystemPublisher extends BasePublisher implements IPublishe
         this.directory = directory;
     }
 
-    public void publish(IFileArtifactMetaData metaData, InputStream artifact) {
+    @Override
+    public void publish(IFileArtifact artifact) {
+        IFileArtifactMetaData metaData = artifact.getArtifactMetaData();
+        InputStream artifactStream = artifact.getStream();
         File fullPath = new File(directory + File.separator + generateUniqueIdentifier(metaData.getOwner()));
         if (!fullPath.exists()) {
             fullPath.mkdirs();
@@ -61,7 +64,7 @@ public class LocalFileSystemPublisher extends BasePublisher implements IPublishe
                 logger.debug("Saving file: " + location);
             }
             outputStream = openOutputStream(new File(location));
-            IOUtils.copyLarge(artifact, outputStream);
+            IOUtils.copyLarge(artifactStream, outputStream);
             outputStream.flush();
             if (logger.isDebugEnabled()) {
                 logger.debug("Saved file: " + location);
@@ -70,8 +73,9 @@ public class LocalFileSystemPublisher extends BasePublisher implements IPublishe
             logger.error(e.getMessage(), e);
         }
         finally {
-            IOUtils.closeQuietly(artifact);
+            IOUtils.closeQuietly(artifactStream);
             IOUtils.closeQuietly(outputStream);
+            PublishUtils.reset(artifact);
         }
 
         metaData.setLocation(location);

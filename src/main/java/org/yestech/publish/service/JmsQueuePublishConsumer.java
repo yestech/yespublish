@@ -19,8 +19,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
 import static org.yestech.lib.xml.XmlUtils.fromXml;
 import org.yestech.publish.IPublishConstant;
+import org.yestech.publish.util.PublishUtils;
 import org.yestech.publish.objectmodel.IArtifactMetaData;
 import org.yestech.publish.objectmodel.IArtifact;
+import org.yestech.publish.objectmodel.IFileArtifact;
 
 import javax.jms.*;
 import java.io.InputStream;
@@ -44,37 +46,46 @@ public class JmsQueuePublishConsumer implements IPublishConsumer, MessageListene
     }
 
     public void onMessage(Message message) {
-        if (message instanceof TextMessage) {
-            TextMessage textMessage = (TextMessage) message;
+//        if (message instanceof TextMessage) {
+//            TextMessage textMessage = (TextMessage) message;
+//            String fileLocation = "";
+//            try {
+//                String url = textMessage.getStringProperty(IPublishConstant.URL);
+//                String fileName = textMessage.getStringProperty(IPublishConstant.FILE_NAME);
+//                String xmlMetaData = textMessage.getText();
+//                IArtifactMetaData metaData = fromXml(xmlMetaData);
+//                fileLocation = url + fileName;
+//                URL artifactUrl = new URL(fileLocation);
+//                recieve(metaData, artifactUrl.openStream());
+//            } catch (Exception e) {
+//                logger.error("error retrieving file from location: " + fileLocation, e);
+//            }
+//        } else if (message instanceof ObjectMessage) {
+        if (message instanceof ObjectMessage) {
+            ObjectMessage objMessage = (ObjectMessage) message;
             String fileLocation = "";
             try {
-                String url = textMessage.getStringProperty(IPublishConstant.URL);
-                String fileName = textMessage.getStringProperty(IPublishConstant.FILE_NAME);
-                String xmlMetaData = textMessage.getText();
-                IArtifactMetaData metaData = fromXml(xmlMetaData);
-                fileLocation = url + fileName;
-                URL artifactUrl = new URL(fileLocation);
-                recieve(metaData, artifactUrl.openStream());
-            } catch (Exception e) {
-                logger.error("error retrieving file from location: " + fileLocation, e);
-            }
-        } else if (message instanceof ObjectMessage) {
-            ObjectMessage objMessage = (ObjectMessage) message;
-            try {
                 IArtifact artifact = (IArtifact) objMessage.getObject();
-                recieve(artifact);
-            } catch (JMSException e) {
+                if (PublishUtils.isFileArtifact(artifact)) {
+                    IFileArtifact fileArtifact = (IFileArtifact) artifact;
+                    String url = objMessage.getStringProperty(IPublishConstant.URL);
+                    String fileName = objMessage.getStringProperty(IPublishConstant.FILE_NAME);
+                    fileLocation = url + fileName;
+                    URL artifactUrl = new URL(fileLocation);
+                    fileArtifact.setStream(artifactUrl.openStream());
+                    recieve(fileArtifact);
+                } else {
+                    recieve(artifact);
+                }
+            } catch (Exception e) {
                 logger.error("error retrieving artifact..." , e);
             }
         }
 
     }
 
-    private void recieve(IArtifact artifact) {
+    @Override
+    public void recieve(IArtifact artifact) {
         processor.process(artifact);
-    }
-
-    public void recieve(IArtifactMetaData metaData, InputStream artifact) {
-        processor.process(metaData, artifact);
     }
 }

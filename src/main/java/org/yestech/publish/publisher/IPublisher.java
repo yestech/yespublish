@@ -19,9 +19,11 @@ import org.yestech.publish.objectmodel.IArtifact;
 import java.io.InputStream;
 
 /**
+ * The classes that actually move an {@link org.yestech.publish.objectmodel.IArtifact} to it destination.
+ * 
  * @author Artie Copeland
  * @version $Revision: $
  */
-public interface IPublisher<TYPE extends IArtifactMetaData, ARTIFACT> {
-    void publish(TYPE metaData, ARTIFACT artifact);
+public interface IPublisher<ARTIFACT extends IArtifact> {
+    void publish(ARTIFACT artifact);
 }

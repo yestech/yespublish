@@ -15,6 +15,7 @@ package org.yestech.publish.service;
 
 import org.yestech.publish.objectmodel.IArtifactMetaData;
 import org.yestech.publish.objectmodel.IArtifact;
+import org.yestech.publish.objectmodel.IFileArtifact;
 
 import java.io.File;
 import java.io.InputStream;
@@ -28,11 +29,19 @@ import java.net.URL;
  */
 public interface IPublishProducer {
     
-    void send(IArtifactMetaData metaData, File artifact);
-
-    void send(IArtifactMetaData metaData, InputStream artifact);
-
-    void send(IArtifactMetaData metaData, URL artifact);
+//    void send(IArtifactMetaData metaData, File artifact);
+//
+//    void send(IArtifactMetaData metaData, InputStream artifact);
+//
+//    void send(IArtifactMetaData metaData, URL artifact);
 
     void send(IArtifact artifact);
+
+    void send(IFileArtifact artifact);
+
+//    void send(IArtifact artifact, InputStream artifactStream);
+//
+//    void send(IArtifact artifact, URL artifactUrl);
+//
+//    void send(IArtifact artifact, File artifactFile);
 }

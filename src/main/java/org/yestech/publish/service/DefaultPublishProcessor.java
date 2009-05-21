@@ -25,6 +25,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Delegates to the correct {@link org.yestech.publish.publisher.IPublisher} for the {@link org.yestech.publish.objectmodel.ArtifactType}
+ * wanting to be published.
+ * 
  * @author $Author: $
  * @version $Revision: $
  */
@@ -42,12 +45,6 @@ public class DefaultPublishProcessor implements IPublishProcessor {
         }
     }
 
-    @Override
-    public void process(IArtifactMetaData metaData, InputStream artifact) {
-        IPublisher publisher = publishers.get(metaData.getArtifactType());
-        publisher.publish(metaData, artifact);
-    }
-
     public Map<ArtifactType, IPublisher> getPublishers() {
         return publishers;
     }
@@ -59,6 +56,6 @@ public class DefaultPublishProcessor implements IPublishProcessor {
     @Override
     public void process(IArtifact artifact) {
         IPublisher publisher = publishers.get(artifact.getArtifactMetaData().getArtifactType());
-        publisher.publish(artifact.getArtifactMetaData(), artifact);
+        publisher.publish(artifact);
     }
 }

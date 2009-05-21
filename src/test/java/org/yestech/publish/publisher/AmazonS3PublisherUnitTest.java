@@ -19,7 +19,6 @@ import org.junit.Before;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.jmock.integration.junit4.JMock;
-import org.jmock.integration.junit4.JUnit4Mockery;
 //import org.jmock.lib.legacy.ClassImposteriser;
 import org.jmock.Mockery;
 import org.jmock.Expectations;
@@ -35,8 +34,7 @@ import org.jets3t.service.model.S3BucketLoggingStatus;
 import org.jets3t.service.model.S3Owner;
 import org.yestech.publish.objectmodel.IFileArtifactMetaData;
 import org.yestech.publish.objectmodel.IArtifactOwner;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
+import org.yestech.publish.objectmodel.IFileArtifact;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -67,34 +65,41 @@ public class AmazonS3PublisherUnitTest {
     public void testPublish() throws S3ServiceException {
         File tempDir = new File(System.getProperty("java.io.tmpdir"));
 //        final S3Service service = context.mock(S3Service.class, "s3service");
-        final IFileArtifactMetaData fileArtifact = context.mock(IFileArtifactMetaData.class, "fileArtifact");
+        final IFileArtifact fileArtifact = context.mock(IFileArtifact.class, "fileArtifact");
+        final IFileArtifactMetaData fileArtifactMetaData = context.mock(IFileArtifactMetaData.class, "fileArtifactMetaData");
         final IArtifactOwner artifactOwner = context.mock(IArtifactOwner.class, "owner");
         final String ownerId = "100";
         final String fileName = "testFile.txt";
         
         String data = "this is a test";
-        ByteArrayInputStream stream = new ByteArrayInputStream(data.getBytes());
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data.getBytes());
 
         context.checking(new Expectations() {
             {
-                oneOf(fileArtifact).getOwner();
+                oneOf(fileArtifact).getArtifactMetaData();
+                will(returnValue(fileArtifactMetaData));
+                oneOf(fileArtifact).getStream();
+                will(returnValue(stream));
+                oneOf(fileArtifactMetaData).getOwner();
                 will(returnValue(artifactOwner));
                 oneOf(artifactOwner).getIdentifier();
                 will(returnValue(ownerId));
-                oneOf(fileArtifact).getFileName();
+                oneOf(fileArtifactMetaData).getFileName();
                 will(returnValue(fileName));
-                oneOf(fileArtifact).getSize();
+                oneOf(fileArtifactMetaData).getSize();
                 will(returnValue(100l));
-                oneOf(fileArtifact).getMimeType();
+                oneOf(fileArtifactMetaData).getMimeType();
                 will(returnValue("application/txt"));
 //                oneOf(service).putObject(with(aNonNull(S3Bucket.class)), with(aNonNull(S3Object.class)));
-                oneOf(fileArtifact).setLocation(with(aNonNull(String.class)));
+                oneOf(fileArtifactMetaData).setLocation(with(aNonNull(String.class)));
+                oneOf(fileArtifact).setFile(null);
+                oneOf(fileArtifact).setStream(null);
             }
         });
         final MockS3Service service = new MockS3Service(null);
         publisher.setS3Service(service);
         publisher.setTempDirectory(tempDir);
-        publisher.publish(fileArtifact, stream);
+        publisher.publish(fileArtifact);
         assertEquals(AccessControlList.REST_CANNED_PUBLIC_READ, service.getS3Object().getAcl());
         assertEquals(0, stream.available());
     }

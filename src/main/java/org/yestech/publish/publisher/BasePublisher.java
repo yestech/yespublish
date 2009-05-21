@@ -26,7 +26,4 @@ import java.io.InputStream;
  */
 public abstract class BasePublisher {
 
-    public void publish(IArtifact artifact) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
 }
