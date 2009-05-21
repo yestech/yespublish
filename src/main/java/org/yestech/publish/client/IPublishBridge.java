@@ -31,12 +31,6 @@ import java.util.Map;
  * @version $Revision: $
  */
 public interface IPublishBridge {
-//    void publish(IArtifactMetaData metaData, InputStream artifact);
-//
-//    void publish(IArtifactMetaData metaData, URL artifact);
-//
-//    void publish(IArtifactMetaData metaData, File artifact);
-
     /**
      * Publish a generic artifact.
      *
@@ -54,8 +48,4 @@ public interface IPublishBridge {
      * @param artifact Artifact to publish
      */
     void publish(IFileArtifact artifact);
-
-//    void publish(IArtifact artifact, URL artifactUrl);
-//
-//    void publish(IArtifact artifact, File artifactFile);
 }
