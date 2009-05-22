@@ -64,7 +64,6 @@ public class JmsQueuePublishProducer implements IPublishProducer {
         return url;
     }
 
-    @Required
     public void setUrl(String url) {
         this.url = url;
     }
