@@ -114,28 +114,32 @@ public class AmazonS3Publisher extends BasePublisher implements IPublisher<IFile
     }
 
     @PostConstruct
-    public void init() throws S3ServiceException {
-        awsCredentials = new AWSCredentials(accessKey, secretKey);
-        s3Service = new RestS3Service(awsCredentials);
-        S3Bucket[] myBuckets = s3Service.listAllBuckets();
-        if (logger.isDebugEnabled()) {
-            //test s3 connection
-            logger.debug("How many buckets to I have in S3? " + myBuckets.length);
-        }
-        boolean createNewBucket = true;
-        for (S3Bucket bucket : myBuckets) {
-            if (StringUtils.equals(getBucketName(), bucket.getName())) {
-                artifactBucket = bucket;
-                createNewBucket = false;
-                break;
+    public void init() {
+        try {
+            awsCredentials = new AWSCredentials(accessKey, secretKey);
+            s3Service = new RestS3Service(awsCredentials);
+            S3Bucket[] myBuckets = s3Service.listAllBuckets();
+            if (logger.isDebugEnabled()) {
+                //test s3 connection
+                logger.debug("How many buckets to I have in S3? " + myBuckets.length);
             }
-        }
-        if (createNewBucket) {
-            artifactBucket = s3Service.createBucket(getBucketName());
-            setACLOnBucket();
-        }
-        if (logger.isDebugEnabled()) {
-            logger.debug("Created test bucket: " + artifactBucket.getName());
+            boolean createNewBucket = true;
+            for (S3Bucket bucket : myBuckets) {
+                if (StringUtils.equals(getBucketName(), bucket.getName())) {
+                    artifactBucket = bucket;
+                    createNewBucket = false;
+                    break;
+                }
+            }
+            if (createNewBucket) {
+                artifactBucket = s3Service.createBucket(getBucketName());
+                setACLOnBucket();
+            }
+            if (logger.isDebugEnabled()) {
+                logger.debug("Created test bucket: " + artifactBucket.getName());
+            }
+        } catch (S3ServiceException e) {
+            logger.error("Error initializing Amazon S3 Publisher...", e);
         }
     }
 
