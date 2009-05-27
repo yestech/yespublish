@@ -37,10 +37,15 @@ public class DefaultPublishProcessor implements IPublishProcessor {
 
 
     public void setProcessorList(List<IPublisher> publisherList) {
-        for (IPublisher processor : publisherList) {
-            ProducerArtifactType producerArtifactType = processor.getClass().getAnnotation(ProducerArtifactType.class);
-            for (ArtifactType artifactType : producerArtifactType.type()) {
-                publishers.put(artifactType, processor);
+        for (IPublisher publisher : publisherList) {
+            final Class<? extends IPublisher> publisherClass = publisher.getClass();
+            if (publisherClass != null) {
+                ProducerArtifactType producerArtifactType = publisherClass.getAnnotation(ProducerArtifactType.class);
+                if (producerArtifactType != null) {
+                    for (ArtifactType artifactType : producerArtifactType.type()) {
+                        publishers.put(artifactType, publisher);
+                    }
+                }
             }
         }
     }
