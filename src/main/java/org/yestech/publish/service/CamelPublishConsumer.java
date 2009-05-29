@@ -16,6 +16,7 @@ package org.yestech.publish.service;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
+import org.apache.camel.impl.DefaultMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
@@ -25,6 +26,7 @@ import org.yestech.publish.objectmodel.IFileArtifact;
 import org.yestech.publish.util.PublishUtils;
 
 import java.net.URL;
+import java.util.Map;
 
 /**
  * A camel based processor that assumes the body of a {@link org.apache.camel.Message} is of type
@@ -37,6 +39,7 @@ public class CamelPublishConsumer implements IPublishConsumer, Processor {
 
     final private static Logger logger = LoggerFactory.getLogger(CamelPublishConsumer.class);
     private IPublishProcessor processor;
+    private Map<String, Object> headerParameters;
 
     public IPublishProcessor getProcessor() {
         return processor;
@@ -47,11 +50,20 @@ public class CamelPublishConsumer implements IPublishConsumer, Processor {
         this.processor = processor;
     }
 
+    public Map<String, Object> getHeaderParameters() {
+        return headerParameters;
+    }
+
+    public void setHeaderParameters(Map<String, Object> headerParameters) {
+        this.headerParameters = headerParameters;
+    }
+
     @Override
     public void process(Exchange exchange) throws Exception {
         final Throwable throwable = exchange.getException();
         if (throwable == null) {
             final Message message = exchange.getIn();
+            Message resultMessage = new DefaultMessage();
             String fileLocation = "";
             try {
                 IArtifact artifact = message.getBody(IArtifact.class);
@@ -63,11 +75,18 @@ public class CamelPublishConsumer implements IPublishConsumer, Processor {
                     URL artifactUrl = new URL(fileLocation);
                     fileArtifact.setStream(artifactUrl.openStream());
                     recieve(fileArtifact);
+                    resultMessage.setBody(artifact, IFileArtifact.class);
                 } else {
                     recieve(artifact);
+                    resultMessage.setBody(artifact, IArtifact.class);
                 }
+                if (headerParameters != null) {
+                    resultMessage.setHeaders(headerParameters);
+                }
+                exchange.setOut(resultMessage);
             } catch (Exception e) {
                 logger.error("error retrieving artifact...", e);
+                exchange.setException(e);
             }
         } else {
             logger.error("error in the exchange", throwable);
