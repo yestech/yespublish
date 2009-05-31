@@ -24,8 +24,8 @@ public interface IArtifactOwner<T extends IArtifactOwnerType, I> extends Seriali
 
     void setOwnerType(T type);
     
-    I getIdentifier();
+    I getOwnerIdentifier();
 
-    void setIdentifier(I identifier);
+    void setOwnerIdentifier(I identifier);
 
 }

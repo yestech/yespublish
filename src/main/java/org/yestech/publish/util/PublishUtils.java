@@ -14,8 +14,6 @@
 package org.yestech.publish.util;
 
 import org.yestech.publish.objectmodel.*;
-import org.yestech.lib.crypto.CryptoUtils;
-import org.yestech.lib.crypto.MessageDigestUtils;
 import static org.yestech.lib.crypto.MessageDigestUtils.sha1Hash;
 
 import java.util.UUID;
@@ -29,13 +27,13 @@ public class PublishUtils {
     /**
      * Generates a Unique Identifer using the form:
      * <br/>
-     * sha1({@link org.yestech.publish.objectmodel.IArtifactOwner#getIdentifier()#toString()})
+     * sha1({@link org.yestech.publish.objectmodel.IArtifactOwner#getOwnerIdentifier()#toString()})
      *
      * @param owner The Owner
      * @return the identifier
      */
     public static String generateUniqueIdentifier(IArtifactOwner owner) {
-        return sha1Hash(owner.getIdentifier().toString());
+        return sha1Hash(owner.getOwnerIdentifier().toString());
     }
 
     /**

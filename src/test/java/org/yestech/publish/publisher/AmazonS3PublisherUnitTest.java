@@ -80,9 +80,9 @@ public class AmazonS3PublisherUnitTest {
                 will(returnValue(fileArtifactMetaData));
                 oneOf(fileArtifact).getStream();
                 will(returnValue(stream));
-                oneOf(fileArtifactMetaData).getOwner();
+                oneOf(fileArtifactMetaData).getArtifactOwner();
                 will(returnValue(artifactOwner));
-                oneOf(artifactOwner).getIdentifier();
+                oneOf(artifactOwner).getOwnerIdentifier();
                 will(returnValue(ownerId));
                 oneOf(fileArtifactMetaData).getFileName();
                 will(returnValue(fileName));

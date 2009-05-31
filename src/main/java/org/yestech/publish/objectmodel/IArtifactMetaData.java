@@ -22,17 +22,17 @@ import java.io.Serializable;
  * @version $Revision: $
  */
 public interface IArtifactMetaData<O extends IArtifactOwner, I> extends Serializable {
-    I getIdentifier();
+    I getArtifactMetaDataIdentifier();
 
-    void setIdentifier(I identifier);
+    void setArtifactMetaDataIdentifier(I metaDataIdentifier);
 
     ArtifactType getArtifactType();
 
     void setArtifactType(ArtifactType type);
 
-    void setOwner(O owner);
+    void setArtifactOwner(O owner);
 
-    O getOwner();
+    O getArtifactOwner();
 
     public DateTime getCreated();
 

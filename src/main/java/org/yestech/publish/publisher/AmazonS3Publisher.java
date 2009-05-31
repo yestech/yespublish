@@ -23,12 +23,10 @@ import org.jets3t.service.Constants;
 import org.jets3t.service.acl.AccessControlList;
 import org.jets3t.service.acl.GroupGrantee;
 import org.jets3t.service.acl.Permission;
-import org.jets3t.service.acl.CanonicalGrantee;
 import org.jets3t.service.utils.ServiceUtils;
 import org.jets3t.service.impl.rest.httpclient.RestS3Service;
 import org.jets3t.service.model.S3Bucket;
 import org.jets3t.service.model.S3Object;
-import org.jets3t.service.model.S3Owner;
 import org.jets3t.service.security.AWSCredentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -154,7 +152,7 @@ public class AmazonS3Publisher extends BasePublisher implements IPublisher<IFile
     public void publish(IFileArtifact artifact) {
         IFileArtifactMetaData metaData = artifact.getArtifactMetaData();
         InputStream artifactStream = artifact.getStream();
-        String artifactDirectoryName = generateUniqueIdentifier(metaData.getOwner());
+        String artifactDirectoryName = generateUniqueIdentifier(metaData.getArtifactOwner());
         final String uniqueFileName = generateUniqueIdentifier(metaData);
         final String tempFileFqn = saveToDisk(artifactDirectoryName, artifactStream, uniqueFileName);
         try {

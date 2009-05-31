@@ -23,9 +23,9 @@ import java.io.InputStream;
  * @version $Revision: $
  */
 public interface IFileArtifact<MD extends IFileArtifactMetaData, ID> extends IArtifact<MD, ID> {
-    ID getIdentifier();
+    ID getArtifactIdentifier();
 
-    void setIdentifier(ID identifier);
+    void setArtifactIdentifier(ID identifier);
 
     public MD getArtifactMetaData();
 

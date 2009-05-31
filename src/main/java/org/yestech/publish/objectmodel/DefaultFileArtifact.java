@@ -15,7 +15,6 @@ package org.yestech.publish.objectmodel;
 
 import java.io.File;
 import java.io.InputStream;
-import java.net.URL;
 
 /**
  * @author Artie Copeland
@@ -23,7 +22,7 @@ import java.net.URL;
  */
 public class DefaultFileArtifact<FMD extends IFileArtifactMetaData, ID> implements IFileArtifact<FMD, ID> {
     private FMD artifactMetaData;
-    private ID identifier;
+    private ID artifactIdentifier;
     private File file;
     private InputStream stream;
 
@@ -35,12 +34,12 @@ public class DefaultFileArtifact<FMD extends IFileArtifactMetaData, ID> implemen
         this.artifactMetaData = artifactMetaData;
     }
 
-    public ID getIdentifier() {
-        return identifier;
+    public ID getArtifactIdentifier() {
+        return artifactIdentifier;
     }
 
-    public void setIdentifier(ID identifier) {
-        this.identifier = identifier;
+    public void setArtifactIdentifier(ID identifier) {
+        this.artifactIdentifier = identifier;
     }
 
     public File getFile() {

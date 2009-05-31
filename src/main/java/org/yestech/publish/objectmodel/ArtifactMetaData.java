@@ -26,7 +26,7 @@ public class ArtifactMetaData<O extends IArtifactOwner, I> implements IArtifactM
     private ArtifactType type;
     private String location;
     private O owner;
-    private I identifier;
+    private I metaDataIdentifier;
     private DateTime created;
     private DateTime modified;
 
@@ -46,12 +46,12 @@ public class ArtifactMetaData<O extends IArtifactOwner, I> implements IArtifactM
         this.modified = modified;
     }
 
-    public I getIdentifier() {
-        return identifier;
+    public I getArtifactMetaDataIdentifier() {
+        return metaDataIdentifier;
     }
 
-    public void setIdentifier(I identifier) {
-        this.identifier = identifier;
+    public void setArtifactMetaDataIdentifier(I metaDataIdentifier) {
+        this.metaDataIdentifier = metaDataIdentifier;
     }
 
     public String getMimeType() {
@@ -94,11 +94,11 @@ public class ArtifactMetaData<O extends IArtifactOwner, I> implements IArtifactM
         this.location = location;
     }
 
-    public O getOwner() {
+    public O getArtifactOwner() {
         return owner;
     }
 
-    public void setOwner(O owner) {
+    public void setArtifactOwner(O owner) {
         this.owner = owner;
     }
 }

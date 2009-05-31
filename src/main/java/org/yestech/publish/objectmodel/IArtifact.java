@@ -22,9 +22,9 @@ import java.io.Serializable;
  * @version $Revision: $
  */
 public interface IArtifact<MD extends IArtifactMetaData, ID> extends Serializable {
-    ID getIdentifier();
+    ID getArtifactIdentifier();
 
-    void setIdentifier(ID identifier);
+    void setArtifactIdentifier(ID identifier);
 
     public MD getArtifactMetaData();
 

@@ -14,7 +14,6 @@
 package org.yestech.publish.util;
 
 import org.junit.Test;
-import org.junit.Before;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
@@ -34,7 +33,7 @@ public class PublishUtilsUnitTest {
     public void testGenerateUniqueIdentifierFromOwner() {
         final IArtifactOwner owner = context.mock(IArtifactOwner.class, "owner");
         context.checking(new Expectations(){{
-            oneOf(owner).getIdentifier();
+            oneOf(owner).getOwnerIdentifier();
             will(returnValue("1"));
         }});
 
