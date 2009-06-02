@@ -34,7 +34,7 @@ public class PublishUtils {
      * Generates a Unique Identifer using the form:
      * <br/>
      * sha1({@link org.yestech.publish.objectmodel.IArtifactOwner#getOwnerIdentifier()#toString()})
-     *
+     *                      
      * @param owner The Owner
      * @return the identifier
      */

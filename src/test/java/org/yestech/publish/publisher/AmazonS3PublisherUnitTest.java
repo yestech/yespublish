@@ -35,9 +35,11 @@ import org.jets3t.service.model.S3Owner;
 import org.yestech.publish.objectmodel.IFileArtifactMetaData;
 import org.yestech.publish.objectmodel.IArtifactOwner;
 import org.yestech.publish.objectmodel.IFileArtifact;
+import org.apache.commons.io.FileUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Calendar;
 
@@ -62,8 +64,8 @@ public class AmazonS3PublisherUnitTest {
     }
 
     @Test
-    public void testPublish() throws S3ServiceException {
-        File tempDir = new File(System.getProperty("java.io.tmpdir"));
+    public void testPublish() throws S3ServiceException, IOException {
+        File tempDir = new File(System.getProperty("java.io.tmpdir") + File.separator + "publishUnitTesting");
 //        final S3Service service = context.mock(S3Service.class, "s3service");
         final IFileArtifact fileArtifact = context.mock(IFileArtifact.class, "fileArtifact");
         final IFileArtifactMetaData fileArtifactMetaData = context.mock(IFileArtifactMetaData.class, "fileArtifactMetaData");
@@ -102,6 +104,7 @@ public class AmazonS3PublisherUnitTest {
         publisher.publish(fileArtifact);
         assertEquals(AccessControlList.REST_CANNED_PUBLIC_READ, service.getS3Object().getAcl());
         assertEquals(0, stream.available());
+        FileUtils.deleteDirectory(tempDir);
     }
 
     private static class MockS3Service extends S3Service {
