@@ -76,7 +76,6 @@ public class CamelPublishConsumer implements IPublishConsumer, Processor {
         final Throwable throwable = exchange.getException();
         if (throwable == null) {
             final Message message = exchange.getIn();
-//            Message resultMessage = new DefaultMessage();
             String fileLocation = "";
             try {
                 IArtifact artifact = message.getBody(IArtifact.class);
@@ -89,15 +88,12 @@ public class CamelPublishConsumer implements IPublishConsumer, Processor {
                     String fqn = PublishUtils.saveTempFile(tempDirectory, artifactUrl.openStream(), fileArtifact);
                     recieve(fileArtifact);
                     PublishUtils.removeTempFile(fqn);
-//                    resultMessage.setBody(artifact, IFileArtifact.class);
                 } else {
                     recieve(artifact);
-//                    resultMessage.setBody(artifact, IArtifact.class);
                 }
                 if (headerParameters != null) {
                     message.setHeaders(headerParameters);
                 }
-                exchange.setOut(message);
             } catch (Exception e) {
                 logger.error("error retrieving artifact...", e);
                 exchange.setException(e);
