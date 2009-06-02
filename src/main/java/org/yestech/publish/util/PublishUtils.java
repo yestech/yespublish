@@ -15,14 +15,20 @@ package org.yestech.publish.util;
 
 import org.yestech.publish.objectmodel.*;
 import static org.yestech.lib.crypto.MessageDigestUtils.sha1Hash;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
+import java.io.*;
 
 /**
  * @author Artie Copeland
  * @version $Revision: $
  */
 public class PublishUtils {
+    final private static Logger logger = LoggerFactory.getLogger(PublishUtils.class);
 
     /**
      * Generates a Unique Identifer using the form:
@@ -69,4 +75,45 @@ public class PublishUtils {
             artifact.setStream(null);
         }
     }
+
+    public static void removeTempFile(String fqn) {
+        if (logger.isInfoEnabled()) {
+            logger.info("removing file: " + fqn);
+        }
+        File tmpFile = new File(fqn);
+        if (tmpFile.exists()) {
+            tmpFile.delete();
+        }
+    }
+
+    public static String saveTempFile(File tempDirectory, InputStream inputStream, IFileArtifact artifact) {
+        String fqn = "";
+        FileOutputStream fileOutputStream = null;
+        try {
+            String ownerId = generateUniqueIdentifier(artifact.getArtifactMetaData().getArtifactOwner());
+            String directory = tempDirectory + File.separator + ownerId + File.separator;
+
+            File dir = new File(directory);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            
+            fqn = directory + artifact.getArtifactMetaData().getFileName();
+            final File newFile = new File(fqn);
+
+            fileOutputStream = FileUtils.openOutputStream(newFile);
+            IOUtils.copyLarge(inputStream, fileOutputStream);
+            fileOutputStream.flush();
+            artifact.getArtifactMetaData().setSize(newFile.length());
+            artifact.setStream(new FileInputStream(newFile));
+        } catch (IOException e) {
+            logger.error("error saving streaming data: " + e);
+        }
+        finally {
+            IOUtils.closeQuietly(inputStream);
+            IOUtils.closeQuietly(fileOutputStream);
+        }
+        return fqn;
+    }
+
 }

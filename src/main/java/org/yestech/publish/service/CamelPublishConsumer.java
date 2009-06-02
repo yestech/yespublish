@@ -17,6 +17,8 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
 import org.apache.camel.impl.DefaultMessage;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
@@ -27,6 +29,7 @@ import org.yestech.publish.util.PublishUtils;
 
 import java.net.URL;
 import java.util.Map;
+import java.io.*;
 
 /**
  * A camel based processor that assumes the body of a {@link org.apache.camel.Message} is of type
@@ -40,9 +43,19 @@ public class CamelPublishConsumer implements IPublishConsumer, Processor {
     final private static Logger logger = LoggerFactory.getLogger(CamelPublishConsumer.class);
     private IPublishProcessor processor;
     private Map<String, Object> headerParameters;
+    private File tempDirectory;
 
     public IPublishProcessor getProcessor() {
         return processor;
+    }
+
+    public File getTempDirectory() {
+        return tempDirectory;
+    }
+
+    @Required
+    public void setTempDirectory(File tempDirectory) {
+        this.tempDirectory = tempDirectory;
     }
 
     @Required
@@ -73,8 +86,9 @@ public class CamelPublishConsumer implements IPublishConsumer, Processor {
                     String fileName = message.getHeader(IPublishConstant.FILE_NAME, String.class);
                     fileLocation = url + fileName;
                     URL artifactUrl = new URL(fileLocation);
-                    fileArtifact.setStream(artifactUrl.openStream());
+                    String fqn = PublishUtils.saveTempFile(tempDirectory, artifactUrl.openStream(), fileArtifact);
                     recieve(fileArtifact);
+                    PublishUtils.removeTempFile(fqn);
                     resultMessage.setBody(artifact, IFileArtifact.class);
                 } else {
                     recieve(artifact);
@@ -92,7 +106,7 @@ public class CamelPublishConsumer implements IPublishConsumer, Processor {
             logger.error("error in the exchange", throwable);
         }
     }
-
+    
     @Override
     public void recieve(IArtifact artifact) {
         processor.process(artifact);

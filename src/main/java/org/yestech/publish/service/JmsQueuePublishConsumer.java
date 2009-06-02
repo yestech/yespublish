@@ -26,6 +26,7 @@ import org.yestech.publish.objectmodel.IFileArtifact;
 
 import javax.jms.*;
 import java.io.InputStream;
+import java.io.File;
 import java.net.URL;
 
 /**
@@ -35,6 +36,16 @@ import java.net.URL;
 public class JmsQueuePublishConsumer implements IPublishConsumer, MessageListener {
     final private static Logger logger = LoggerFactory.getLogger(JmsQueuePublishConsumer.class);
     private IPublishProcessor processor;
+    private File tempDirectory;
+
+    public File getTempDirectory() {
+        return tempDirectory;
+    }
+
+    @Required
+    public void setTempDirectory(File tempDirectory) {
+        this.tempDirectory = tempDirectory;
+    }
 
     public IPublishProcessor getProcessor() {
         return processor;
@@ -46,21 +57,6 @@ public class JmsQueuePublishConsumer implements IPublishConsumer, MessageListene
     }
 
     public void onMessage(Message message) {
-//        if (message instanceof TextMessage) {
-//            TextMessage textMessage = (TextMessage) message;
-//            String fileLocation = "";
-//            try {
-//                String url = textMessage.getStringProperty(IPublishConstant.URL);
-//                String fileName = textMessage.getStringProperty(IPublishConstant.FILE_NAME);
-//                String xmlMetaData = textMessage.getText();
-//                IArtifactMetaData metaData = fromXml(xmlMetaData);
-//                fileLocation = url + fileName;
-//                URL artifactUrl = new URL(fileLocation);
-//                recieve(metaData, artifactUrl.openStream());
-//            } catch (Exception e) {
-//                logger.error("error retrieving file from location: " + fileLocation, e);
-//            }
-//        } else if (message instanceof ObjectMessage) {
         if (message instanceof ObjectMessage) {
             ObjectMessage objMessage = (ObjectMessage) message;
             String fileLocation = "";
@@ -72,8 +68,9 @@ public class JmsQueuePublishConsumer implements IPublishConsumer, MessageListene
                     String fileName = objMessage.getStringProperty(IPublishConstant.FILE_NAME);
                     fileLocation = url + fileName;
                     URL artifactUrl = new URL(fileLocation);
-                    fileArtifact.setStream(artifactUrl.openStream());
+                    String fqn = PublishUtils.saveTempFile(tempDirectory, artifactUrl.openStream(), fileArtifact);
                     recieve(fileArtifact);
+                    PublishUtils.removeTempFile(fqn);
                 } else {
                     recieve(artifact);
                 }

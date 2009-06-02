@@ -151,6 +151,11 @@
             <version>1.6.1</version>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
+        </dependency>
     </dependencies>
     <build>
         <pluginManagement>
@@ -204,11 +209,11 @@
             <id>yestech.thirdparty</id>
             <url>http://repo.yestech.org/content/repositories/thirdparty</url>
         </repository>
-        <repository>
-            <name>jets3t</name>
-            <id>jets3t</id>
-            <url>http://jets3t.s3.amazonaws.com/maven2</url>
-        </repository>
+        <!--<repository>-->
+            <!--<name>jets3t</name>-->
+            <!--<id>jets3t</id>-->
+            <!--<url>http://jets3t.s3.amazonaws.com/maven2</url>-->
+        <!--</repository>-->
     </repositories>
     <distributionManagement>
         <repository>

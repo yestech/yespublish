@@ -174,11 +174,12 @@ public class AmazonS3Publisher extends BasePublisher implements IPublisher<IFile
             logger.error(e.getMessage(), e);
         }
         finally {
-            //clean up temp file
-            try {
-                FileUtils.deleteDirectory(new File(artifactDirectoryName));
-            } catch (Exception e) {
-                logger.error("error delete tempfile: " + tempFileFqn);
+            if (logger.isInfoEnabled()) {
+                logger.info("removing file: " + tempFileFqn);
+            }
+            File uploadedFile = new File(tempFileFqn);
+            if (uploadedFile.exists()) {
+                uploadedFile.delete();
             }
             PublishUtils.reset(artifact);
         }
