@@ -20,9 +20,11 @@ import org.springframework.beans.factory.annotation.Required;
 import static org.yestech.lib.xml.XmlUtils.fromXml;
 import org.yestech.publish.IPublishConstant;
 import org.yestech.publish.util.PublishUtils;
+import static org.yestech.publish.util.PublishUtils.translateArtifact;
 import org.yestech.publish.objectmodel.IArtifactMetaData;
 import org.yestech.publish.objectmodel.IArtifact;
 import org.yestech.publish.objectmodel.IFileArtifact;
+import org.yestech.publish.objectmodel.TerracottaPipeArtifact;
 
 import javax.jms.*;
 import java.io.InputStream;
@@ -61,7 +63,7 @@ public class JmsQueuePublishConsumer implements IPublishConsumer, MessageListene
             ObjectMessage objMessage = (ObjectMessage) message;
             String fileLocation = "";
             try {
-                IArtifact artifact = (IArtifact) objMessage.getObject();
+                IArtifact artifact = translateArtifact((IArtifact) objMessage.getObject());
                 if (PublishUtils.isFileArtifact(artifact)) {
                     IFileArtifact fileArtifact = (IFileArtifact) artifact;
                     String url = objMessage.getStringProperty(IPublishConstant.URL);

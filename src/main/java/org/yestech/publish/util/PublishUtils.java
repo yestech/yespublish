@@ -43,6 +43,20 @@ public class PublishUtils {
     }
 
     /**
+     * Returns the physical {@link IArtifact} type.
+     *
+     * @param artifact
+     * @return
+     */
+    public static IArtifact translateArtifact(IArtifact artifact) {
+        IArtifact artifactType = artifact;
+        if (artifact instanceof TerracottaPipeArtifact) {
+            artifactType = ((TerracottaPipeArtifact) artifact).getArtifact();
+        }
+        return artifactType;
+    }
+
+    /**
      * Generates a Unique Identifer using the form:
      * <br/>
      * sha1({@link UUID#randomUUID}) + "_" + {@link org.yestech.publish.objectmodel.IFileArtifactMetaData#getFileName()}
@@ -62,6 +76,16 @@ public class PublishUtils {
      */
     public static boolean isFileArtifact(IArtifact artifact) {
         return (artifact instanceof IFileArtifact);
+    }
+
+    /**
+     * Determines if an Artifact is an {@link org.yestech.publish.objectmodel.TerracottaPipeArtifact}
+     *
+     * @param artifact Artifact to check
+     * @return true if of type TerracottaPipeArtifact and non null
+     */
+    public static boolean isTerracottaArtifact(IArtifact artifact) {
+        return (artifact instanceof TerracottaPipeArtifact);
     }
 
     /**

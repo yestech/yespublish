@@ -29,19 +29,12 @@ import java.net.URL;
  */
 public interface IPublishProducer {
     
-//    void send(IArtifactMetaData metaData, File artifact);
-//
-//    void send(IArtifactMetaData metaData, InputStream artifact);
-//
-//    void send(IArtifactMetaData metaData, URL artifact);
-
     void send(IArtifact artifact);
 
     void send(IFileArtifact artifact);
 
-//    void send(IArtifact artifact, InputStream artifactStream);
-//
-//    void send(IArtifact artifact, URL artifactUrl);
-//
-//    void send(IArtifact artifact, File artifactFile);
+    public String getUrl();
+
+    public void setUrl(String url);
+
 }

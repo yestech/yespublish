@@ -28,6 +28,7 @@ import org.yestech.publish.objectmodel.IFileArtifact;
 import org.yestech.publish.objectmodel.TerracottaPipeArtifact;
 import org.yestech.publish.util.PublishUtils;
 import static org.yestech.publish.util.PublishUtils.translateArtifact;
+import org.yestech.lib.xml.XmlUtils;
 
 import java.net.URL;
 import java.util.Map;
@@ -35,14 +36,14 @@ import java.io.*;
 
 /**
  * A camel based processor that assumes the body of a {@link org.apache.camel.Message} is of type
- * {@link IArtifact}.
+ * {@link org.yestech.publish.objectmodel.IArtifact}.
  *
  * @author Artie Copeland
  * @version $Revision: $
  */
-public class CamelPublishConsumer implements IPublishConsumer, Processor {
+public class CamelXmlPublishConsumer implements IPublishConsumer, Processor {
 
-    final private static Logger logger = LoggerFactory.getLogger(CamelPublishConsumer.class);
+    final private static Logger logger = LoggerFactory.getLogger(CamelXmlPublishConsumer.class);
     private IPublishProcessor processor;
     private Map<String, Object> headerParameters;
     private File tempDirectory;
@@ -80,11 +81,20 @@ public class CamelPublishConsumer implements IPublishConsumer, Processor {
             final Message message = exchange.getIn();
             String fileLocation = "";
             try {
-                IArtifact artifact = translateArtifact(message.getBody(IArtifact.class));
+                String xmlArtifact = message.getBody(String.class);
+                final IArtifact tempArtifact = (IArtifact) XmlUtils.fromXml(xmlArtifact);
+                String url = "";
+                String fileName = "";
+                if (PublishUtils.isTerracottaArtifact(tempArtifact)) {
+                    TerracottaPipeArtifact terracottaArtifact = (TerracottaPipeArtifact) tempArtifact;
+                    url = terracottaArtifact.getParameter(IPublishConstant.URL);
+                    fileName = terracottaArtifact.getParameter(IPublishConstant.FILE_NAME);
+
+                }
+                IArtifact artifact = translateArtifact(tempArtifact);
+
                 if (PublishUtils.isFileArtifact(artifact)) {
                     IFileArtifact fileArtifact = (IFileArtifact) artifact;
-                    String url = message.getHeader(IPublishConstant.URL, String.class);
-                    String fileName = message.getHeader(IPublishConstant.FILE_NAME, String.class);
                     fileLocation = url + fileName;
                     URL artifactUrl = new URL(fileLocation);
                     String fqn = PublishUtils.saveTempFile(tempDirectory, artifactUrl.openStream(), fileArtifact);
@@ -104,7 +114,7 @@ public class CamelPublishConsumer implements IPublishConsumer, Processor {
             logger.error("error in the exchange", throwable);
         }
     }
-    
+
     @Override
     public void recieve(IArtifact artifact) {
         processor.process(artifact);

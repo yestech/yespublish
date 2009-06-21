@@ -29,6 +29,16 @@ import java.net.URL;
  * @version $Revision: $
  */
 public class NoOpPublishProducer implements IPublishProducer {
+    private String url;
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     @Override
     public void send(IArtifact artifact) {
         //To change body of implemented methods use File | Settings | File Templates.
@@ -38,4 +48,6 @@ public class NoOpPublishProducer implements IPublishProducer {
     public void send(IFileArtifact artifact) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
+
+
 }

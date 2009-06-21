@@ -7,7 +7,30 @@
     <version>1.0.0-SNAPSHOT</version>
     <name>YES Publish</name>
     <url>http://yestech.org</url>
+    <properties>
+        <tim.masterworker.version>2.1.1-SNAPSHOT</tim.masterworker.version>
+        <tim.pipes.version>2.1.1-SNAPSHOT</tim.pipes.version>
+        <tim-annotations.version>1.4.0-SNAPSHOT</tim-annotations.version>
+    </properties>
     <dependencies>
+        <dependency>
+            <groupId>org.terracotta.modules</groupId>
+            <artifactId>tim-annotations</artifactId>
+            <version>${tim-annotations.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.terracotta.modules</groupId>
+            <artifactId>tim-pipes</artifactId>
+            <version>${tim.pipes.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.terracotta.modules</groupId>
+            <artifactId>tim-masterworker</artifactId>
+            <version>${tim.masterworker.version}</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -53,22 +76,22 @@
             <scope>test</scope>
         </dependency>
         <!--<dependency>-->
-            <!--<groupId>org.jmock</groupId>-->
-            <!--<artifactId>jmock-legacy</artifactId>-->
-            <!--<version>2.5.1</version>-->
-            <!--<scope>test</scope>-->
+        <!--<groupId>org.jmock</groupId>-->
+        <!--<artifactId>jmock-legacy</artifactId>-->
+        <!--<version>2.5.1</version>-->
+        <!--<scope>test</scope>-->
         <!--</dependency>-->
         <!--<dependency>-->
-            <!--<groupId>org.objenesis</groupId>-->
-            <!--<artifactId>objenesis</artifactId>-->
-            <!--<version>1.0</version>-->
-            <!--<scope>test</scope>-->
+        <!--<groupId>org.objenesis</groupId>-->
+        <!--<artifactId>objenesis</artifactId>-->
+        <!--<version>1.0</version>-->
+        <!--<scope>test</scope>-->
         <!--</dependency>-->
         <!--<dependency>-->
-            <!--<groupId>cglib</groupId>-->
-            <!--<artifactId>cglib-nodep</artifactId>-->
-            <!--<version>2.1_3</version>-->
-            <!--<scope>test</scope>-->
+        <!--<groupId>cglib</groupId>-->
+        <!--<artifactId>cglib-nodep</artifactId>-->
+        <!--<version>2.1_3</version>-->
+        <!--<scope>test</scope>-->
         <!--</dependency>-->
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
@@ -209,12 +232,44 @@
             <id>yestech.thirdparty</id>
             <url>http://repo.yestech.org/content/repositories/thirdparty</url>
         </repository>
+        <repository>
+            <id>blackbox.thirdparty</id>
+            <url>http://blackbox.yestech.org/content/repositories/thirdparty</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
         <!--<repository>-->
-            <!--<name>jets3t</name>-->
-            <!--<id>jets3t</id>-->
-            <!--<url>http://jets3t.s3.amazonaws.com/maven2</url>-->
+        <!--<name>jets3t</name>-->
+        <!--<id>jets3t</id>-->
+        <!--<url>http://jets3t.s3.amazonaws.com/maven2</url>-->
         <!--</repository>-->
+        <repository>
+            <id>terracotta-repository</id>
+            <url>http://www.terracotta.org/download/reflector/maven2</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
     </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>terracotta-repository</id>
+            <url>http://www.terracotta.org/download/reflector/maven2</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
     <distributionManagement>
         <repository>
             <id>yestech.release</id>
