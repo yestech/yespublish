@@ -40,7 +40,7 @@ import java.io.*;
  * @author Artie Copeland
  * @version $Revision: $
  */
-public class CamelPublishConsumer implements IPublishConsumer, Processor {
+public class CamelPublishConsumer implements IPublishConsumer {
 
     final private static Logger logger = LoggerFactory.getLogger(CamelPublishConsumer.class);
     private IPublishProcessor processor;
@@ -73,8 +73,7 @@ public class CamelPublishConsumer implements IPublishConsumer, Processor {
         this.headerParameters = headerParameters;
     }
 
-    @Override
-    public void process(Exchange exchange) throws Exception {
+    public void process(Exchange exchange) {
         final Throwable throwable = exchange.getException();
         if (throwable == null) {
             final Message message = exchange.getIn();

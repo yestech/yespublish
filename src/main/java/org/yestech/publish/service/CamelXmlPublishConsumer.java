@@ -41,7 +41,7 @@ import java.io.*;
  * @author Artie Copeland
  * @version $Revision: $
  */
-public class CamelXmlPublishConsumer implements IPublishConsumer, Processor {
+public class CamelXmlPublishConsumer implements IPublishConsumer {
 
     final private static Logger logger = LoggerFactory.getLogger(CamelXmlPublishConsumer.class);
     private IPublishProcessor processor;
@@ -74,15 +74,16 @@ public class CamelXmlPublishConsumer implements IPublishConsumer, Processor {
         this.headerParameters = headerParameters;
     }
 
-    @Override
-    public void process(Exchange exchange) throws Exception {
+    public void process(Exchange exchange) {
         final Throwable throwable = exchange.getException();
         if (throwable == null) {
+//            final Message newMessage = new DefaultMessage();
             final Message message = exchange.getIn();
             String fileLocation = "";
             try {
                 String xmlArtifact = message.getBody(String.class);
                 final IArtifact tempArtifact = (IArtifact) XmlUtils.fromXml(xmlArtifact);
+                message.setBody(tempArtifact);
                 String url = "";
                 String fileName = "";
                 if (PublishUtils.isTerracottaArtifact(tempArtifact)) {
