@@ -93,7 +93,7 @@ public class CamelXmlPublishConsumer implements IPublishConsumer {
 
                 }
                 IArtifact artifact = translateArtifact(tempArtifact);
-
+                message.setBody(artifact);
                 if (PublishUtils.isFileArtifact(artifact)) {
                     IFileArtifact fileArtifact = (IFileArtifact) artifact;
                     fileLocation = url + fileName;
