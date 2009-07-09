@@ -15,11 +15,13 @@ package org.yestech.publish.publisher;
 
 import static org.apache.commons.io.FileUtils.openOutputStream;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yestech.publish.objectmodel.*;
 import org.yestech.publish.util.PublishUtils;
 import static org.yestech.publish.util.PublishUtils.generateUniqueIdentifier;
+import org.yestech.lib.util.Pair;
 import org.springframework.beans.factory.annotation.Required;
 
 import java.io.File;
@@ -52,11 +54,26 @@ public class LocalFileSystemPublisher extends BasePublisher implements IPublishe
     public void publish(IFileArtifact artifact) {
         IFileArtifactMetaData metaData = artifact.getArtifactMetaData();
         InputStream artifactStream = artifact.getStream();
-        File fullPath = new File(directory + File.separator + generateUniqueIdentifier(metaData.getArtifactOwner()));
+        Pair<String, String> names = metaData.getUniqueNames();
+        String uniquePath = generateUniqueIdentifier(metaData.getArtifactOwner());
+        if (names != null) {
+            String path = names.getFirst();
+            if (StringUtils.isNotBlank(path)) {
+                uniquePath = path;
+            }
+        }
+        File fullPath = new File(directory + File.separator + uniquePath);
         if (!fullPath.exists()) {
             fullPath.mkdirs();
         }
-        String location = fullPath.getAbsolutePath() + File.separator + generateUniqueIdentifier(metaData);
+        String uniqueFileName = generateUniqueIdentifier(metaData);
+        if (names != null) {
+            String fileName = names.getSecond();
+            if (StringUtils.isNotBlank(fileName)) {
+                uniqueFileName = fileName;
+            }
+        }
+        String location = fullPath.getAbsolutePath() + File.separator + uniqueFileName;
         FileOutputStream outputStream = null;
         try {
             if (logger.isDebugEnabled()) {
@@ -77,6 +94,8 @@ public class LocalFileSystemPublisher extends BasePublisher implements IPublishe
             PublishUtils.reset(artifact);
         }
 
-        metaData.setLocation(location);
+        if (StringUtils.isBlank(metaData.getLocation())) {
+            metaData.setLocation(location);            
+        }
     }
 }

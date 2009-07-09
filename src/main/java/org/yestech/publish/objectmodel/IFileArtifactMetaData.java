@@ -13,6 +13,8 @@
  */
 package org.yestech.publish.objectmodel;
 
+import org.yestech.lib.util.Pair;
+
 /**
  * @author Artie Copeland
  * @version $Revision: $
@@ -34,5 +36,19 @@ public interface IFileArtifactMetaData<O extends IArtifactOwner, I> extends IArt
     void setLocation(String location);
 
     String getLocation();
+
+    /**
+     * Returns the Path, FileName pair
+     *
+     * @return the pair
+     */
+    Pair<String, String> getUniqueNames();
+
+    /**
+     * Sets the Path, FileName pair
+     *
+     * @param uniqueNames first val - path, second val - filename
+     */
+    void setUniqueFileName(Pair<String, String> uniqueNames);
 
 }

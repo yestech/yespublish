@@ -13,6 +13,8 @@
  */
 package org.yestech.publish.objectmodel;
 
+import org.yestech.lib.util.Pair;
+
 import java.io.File;
 import java.io.InputStream;
 
@@ -25,6 +27,7 @@ public class DefaultFileArtifact<FMD extends IFileArtifactMetaData, ID> implemen
     private ID artifactIdentifier;
     private File file;
     private InputStream stream;
+    private Pair<String, String> uniqueNames;
 
     public FMD getArtifactMetaData() {
         return artifactMetaData;
@@ -56,5 +59,13 @@ public class DefaultFileArtifact<FMD extends IFileArtifactMetaData, ID> implemen
 
     public void setStream(InputStream stream) {
         this.stream = stream;
+    }
+
+    public Pair<String, String> getUniqueNames() {
+        return uniqueNames;
+    }
+
+    public void setUniqueNames(Pair<String, String> uniqueNames) {
+        this.uniqueNames = uniqueNames;
     }
 }

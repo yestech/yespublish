@@ -157,7 +157,22 @@ public class AmazonS3Publisher extends BasePublisher implements IPublisher<IFile
         IFileArtifactMetaData metaData = artifact.getArtifactMetaData();
         InputStream artifactStream = artifact.getStream();
         String artifactDirectoryName = generateUniqueIdentifier(metaData.getArtifactOwner());
-        final String uniqueFileName = generateUniqueIdentifier(metaData);
+        String uniqueFileName = generateUniqueIdentifier(metaData);
+        
+        Pair<String, String> names = metaData.getUniqueNames();
+        if (names != null) {
+            String path = names.getFirst();
+            if (StringUtils.isNotBlank(path)) {
+                artifactDirectoryName = path;
+            }
+        }
+        if (names != null) {
+            String fileName = names.getSecond();
+            if (StringUtils.isNotBlank(fileName)) {
+                uniqueFileName = fileName;
+            }
+        }
+
         final String tempFileFqn = saveToDisk(artifactDirectoryName, artifactStream, uniqueFileName);
         try {
             final StringBuilder s3LocationBuilder = new StringBuilder();
