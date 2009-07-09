@@ -36,6 +36,7 @@ import org.yestech.publish.objectmodel.IFileArtifactMetaData;
 import org.yestech.publish.objectmodel.IArtifactOwner;
 import org.yestech.publish.objectmodel.IFileArtifact;
 import org.yestech.publish.objectmodel.ArtifactType;
+import org.yestech.lib.util.Pair;
 import org.apache.commons.io.FileUtils;
 
 import java.io.ByteArrayInputStream;
@@ -93,8 +94,8 @@ public class AmazonS3PublisherUnitTest {
                 will(returnValue(100l));
                 oneOf(fileArtifactMetaData).getMimeType();
                 will(returnValue("application/txt"));
-                oneOf(fileArtifactMetaData).getArtifactType();
-                will(returnValue(ArtifactType.IMAGE));
+//                oneOf(fileArtifactMetaData).getArtifactType();
+//                will(returnValue(ArtifactType.IMAGE));
 //                oneOf(service).putObject(with(aNonNull(S3Bucket.class)), with(aNonNull(S3Object.class)));
                 oneOf(fileArtifactMetaData).getLocation();
                 will(returnValue(""));
@@ -104,8 +105,10 @@ public class AmazonS3PublisherUnitTest {
             }
         });
         final MockS3Service service = new MockS3Service(null);
+        publisher.setArtifactType(ArtifactType.IMAGE);
         publisher.setS3Service(service);
-        publisher.setTempDirectory(tempDir);
+        publisher.getProperties().addProperty(Pair.create(ArtifactType.IMAGE, "tempDirectory"), new File("/tmp//localsave"));
+//        publisher.setTempDirectory(tempDir);
         publisher.publish(fileArtifact);
         assertEquals(AccessControlList.REST_CANNED_PUBLIC_READ, service.getS3Object().getAcl());
         assertEquals(0, stream.available());
@@ -150,7 +153,9 @@ public class AmazonS3PublisherUnitTest {
         });
         final MockS3Service service = new MockS3Service(null);
         publisher.setS3Service(service);
-        publisher.setTempDirectory(tempDir);
+        publisher.setArtifactType(ArtifactType.IMAGE);
+        publisher.getProperties().addProperty(Pair.create(ArtifactType.IMAGE, "tempDirectory"), new File("/tmp//localsave"));
+//        publisher.setTempDirectory(tempDir);
         publisher.publish(fileArtifact);
         assertEquals(AccessControlList.REST_CANNED_PUBLIC_READ, service.getS3Object().getAcl());
         assertEquals(0, stream.available());
