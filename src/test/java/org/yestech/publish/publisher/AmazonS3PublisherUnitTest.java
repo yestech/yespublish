@@ -90,6 +90,8 @@ public class AmazonS3PublisherUnitTest {
                 will(returnValue(ownerId));
                 oneOf(fileArtifactMetaData).getFileName();
                 will(returnValue(fileName));
+                oneOf(fileArtifactMetaData).getUniqueNames();
+                will(returnValue(Pair.create("", "")));
                 oneOf(fileArtifactMetaData).getSize();
                 will(returnValue(100l));
                 oneOf(fileArtifactMetaData).getMimeType();
@@ -140,6 +142,8 @@ public class AmazonS3PublisherUnitTest {
                 will(returnValue(ownerId));
                 oneOf(fileArtifactMetaData).getFileName();
                 will(returnValue(fileName));
+                oneOf(fileArtifactMetaData).getUniqueNames();
+                will(returnValue(Pair.create("", "")));
                 oneOf(fileArtifactMetaData).getSize();
                 will(returnValue(100l));
                 oneOf(fileArtifactMetaData).getMimeType();
