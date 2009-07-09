@@ -49,6 +49,6 @@ public interface IFileArtifactMetaData<O extends IArtifactOwner, I> extends IArt
      *
      * @param uniqueNames first val - path, second val - filename
      */
-    void setUniqueFileName(Pair<String, String> uniqueNames);
+    void setUniqueNames(Pair<String, String> uniqueNames);
 
 }
