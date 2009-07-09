@@ -35,6 +35,7 @@ import org.jets3t.service.model.S3Owner;
 import org.yestech.publish.objectmodel.IFileArtifactMetaData;
 import org.yestech.publish.objectmodel.IArtifactOwner;
 import org.yestech.publish.objectmodel.IFileArtifact;
+import org.yestech.publish.objectmodel.ArtifactType;
 import org.apache.commons.io.FileUtils;
 
 import java.io.ByteArrayInputStream;
@@ -92,6 +93,8 @@ public class AmazonS3PublisherUnitTest {
                 will(returnValue(100l));
                 oneOf(fileArtifactMetaData).getMimeType();
                 will(returnValue("application/txt"));
+                oneOf(fileArtifactMetaData).getArtifactType();
+                will(returnValue(ArtifactType.IMAGE));
 //                oneOf(service).putObject(with(aNonNull(S3Bucket.class)), with(aNonNull(S3Object.class)));
                 oneOf(fileArtifactMetaData).getLocation();
                 will(returnValue(""));

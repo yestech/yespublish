@@ -34,12 +34,18 @@ import org.springframework.beans.factory.annotation.Required;
 import org.yestech.publish.objectmodel.*;
 import static org.yestech.publish.util.PublishUtils.generateUniqueIdentifier;
 import org.yestech.publish.util.PublishUtils;
+import org.yestech.lib.util.Pair;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
 
 /**
  * Publishes to Amazons S3 storage.
+ * <br/>
+ * Valid Properties
+ * <ul>
+ * <li>urlPrefix = Mandatory</li>
+ * </ul>
  *
  * @author Artie Copeland
  * @version $Revision: $
@@ -54,12 +60,25 @@ public class AmazonS3Publisher extends BasePublisher implements IPublisher<IFile
     private S3Service s3Service;
     private String bucketName;
     private S3Bucket artifactBucket;
-    private String urlPrefix;
     private File tempDirectory;
     private static final String HTTP_SEPARATOR = "/";
+    private PublisherProperties properties;
+
+    public AmazonS3Publisher() {
+        properties = new PublisherProperties();
+    }
 
     public File getTempDirectory() {
         return tempDirectory;
+    }
+
+    public PublisherProperties getProperties() {
+        return properties;
+    }
+
+    @Required
+    public void setProperties(PublisherProperties properties) {
+        this.properties = properties;
     }
 
     @Required
@@ -67,14 +86,15 @@ public class AmazonS3Publisher extends BasePublisher implements IPublisher<IFile
         this.tempDirectory = tempDirectory;
     }
 
-    public String getUrlPrefix() {
-        return urlPrefix;
+    private String getUrlPrefix(ArtifactType type) {
+        Pair<ArtifactType, String> key = Pair.create(type, "urlPrefix");
+        return properties.getProperty(key);
     }
-
-    @Required
-    public void setUrlPrefix(String urlPrefix) {
-        this.urlPrefix = urlPrefix;
-    }
+//
+//    @Required
+//    public void setUrlPrefix(String urlPrefix) {
+//        this.urlPrefix = urlPrefix;
+//    }
 
     public String getAccessKey() {
         return accessKey;
@@ -194,7 +214,7 @@ public class AmazonS3Publisher extends BasePublisher implements IPublisher<IFile
         String defaultLocation = metaData.getLocation();
         if (StringUtils.isBlank(defaultLocation)) {
             final StringBuilder builder = new StringBuilder();
-            String location = builder.append(getUrlPrefix()).append(HTTP_SEPARATOR).append(artifactDirectoryName).append(HTTP_SEPARATOR).append(uniqueFileName).toString();
+            String location = builder.append(getUrlPrefix(metaData.getArtifactType())).append(HTTP_SEPARATOR).append(artifactDirectoryName).append(HTTP_SEPARATOR).append(uniqueFileName).toString();
             metaData.setLocation(location);
         }
     }
