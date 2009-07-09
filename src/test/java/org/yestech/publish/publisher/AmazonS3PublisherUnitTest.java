@@ -93,7 +93,54 @@ public class AmazonS3PublisherUnitTest {
                 oneOf(fileArtifactMetaData).getMimeType();
                 will(returnValue("application/txt"));
 //                oneOf(service).putObject(with(aNonNull(S3Bucket.class)), with(aNonNull(S3Object.class)));
+                oneOf(fileArtifactMetaData).getLocation();
+                will(returnValue(""));
                 oneOf(fileArtifactMetaData).setLocation(with(aNonNull(String.class)));
+                oneOf(fileArtifact).setFile(null);
+                oneOf(fileArtifact).setStream(null);
+            }
+        });
+        final MockS3Service service = new MockS3Service(null);
+        publisher.setS3Service(service);
+        publisher.setTempDirectory(tempDir);
+        publisher.publish(fileArtifact);
+        assertEquals(AccessControlList.REST_CANNED_PUBLIC_READ, service.getS3Object().getAcl());
+        assertEquals(0, stream.available());
+        FileUtils.deleteDirectory(tempDir);
+    }
+
+    @Test
+    public void testPublishNoNonBlankLocation() throws S3ServiceException, IOException {
+        File tempDir = new File(System.getProperty("java.io.tmpdir") + File.separator + "publishUnitTesting");
+//        final S3Service service = context.mock(S3Service.class, "s3service");
+        final IFileArtifact fileArtifact = context.mock(IFileArtifact.class, "fileArtifact");
+        final IFileArtifactMetaData fileArtifactMetaData = context.mock(IFileArtifactMetaData.class, "fileArtifactMetaData");
+        final IArtifactOwner artifactOwner = context.mock(IArtifactOwner.class, "owner");
+        final String ownerId = "100";
+        final String fileName = "testFile.txt";
+
+        String data = "this is a test";
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data.getBytes());
+
+        context.checking(new Expectations() {
+            {
+                oneOf(fileArtifact).getArtifactMetaData();
+                will(returnValue(fileArtifactMetaData));
+                oneOf(fileArtifact).getStream();
+                will(returnValue(stream));
+                oneOf(fileArtifactMetaData).getArtifactOwner();
+                will(returnValue(artifactOwner));
+                oneOf(artifactOwner).getOwnerIdentifier();
+                will(returnValue(ownerId));
+                oneOf(fileArtifactMetaData).getFileName();
+                will(returnValue(fileName));
+                oneOf(fileArtifactMetaData).getSize();
+                will(returnValue(100l));
+                oneOf(fileArtifactMetaData).getMimeType();
+                will(returnValue("application/txt"));
+//                oneOf(service).putObject(with(aNonNull(S3Bucket.class)), with(aNonNull(S3Object.class)));
+                oneOf(fileArtifactMetaData).getLocation();
+                will(returnValue("http://localhost/pix.jpg"));
                 oneOf(fileArtifact).setFile(null);
                 oneOf(fileArtifact).setStream(null);
             }

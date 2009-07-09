@@ -191,9 +191,12 @@ public class AmazonS3Publisher extends BasePublisher implements IPublisher<IFile
     }
 
     private void setFinalLocationInMetaData(IFileArtifactMetaData metaData, String artifactDirectoryName, String uniqueFileName) {
-        final StringBuilder builder = new StringBuilder();
-        String location = builder.append(getUrlPrefix()).append(HTTP_SEPARATOR).append(artifactDirectoryName).append(HTTP_SEPARATOR).append(uniqueFileName).toString();
-        metaData.setLocation(location);
+        String defaultLocation = metaData.getLocation();
+        if (StringUtils.isBlank(defaultLocation)) {
+            final StringBuilder builder = new StringBuilder();
+            String location = builder.append(getUrlPrefix()).append(HTTP_SEPARATOR).append(artifactDirectoryName).append(HTTP_SEPARATOR).append(uniqueFileName).toString();
+            metaData.setLocation(location);
+        }
     }
 
     private String saveToDisk(String artifactDirectoryName, InputStream artifact, String uniqueFileName) {
