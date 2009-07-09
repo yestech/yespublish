@@ -45,6 +45,10 @@ import java.io.*;
  * Valid Properties
  * <ul>
  * <li>urlPrefix = Mandatory</li>
+ * <li>tempDirectory = Mandatory</li>
+ * <li>secretKey = Mandatory</li>
+ * <li>accessKey = Mandatory</li>
+ * <li>bucketName = Mandatory</li>
  * </ul>
  *
  * @author Artie Copeland
@@ -54,26 +58,32 @@ import java.io.*;
 public class AmazonS3Publisher extends BasePublisher implements IPublisher<IFileArtifact> {
     final private static Logger logger = LoggerFactory.getLogger(AmazonS3Publisher.class);
 
-    private String accessKey;
-    private String secretKey;
     private AWSCredentials awsCredentials;
     private S3Service s3Service;
-    private String bucketName;
     private S3Bucket artifactBucket;
-    private File tempDirectory;
     private static final String HTTP_SEPARATOR = "/";
     private PublisherProperties properties;
+    private ArtifactType artifactType;
 
     public AmazonS3Publisher() {
         properties = new PublisherProperties();
     }
 
     public File getTempDirectory() {
-        return tempDirectory;
+        return properties.getProperty(Pair.create(getArtifactType(), "tempDirectory"));
     }
 
     public PublisherProperties getProperties() {
         return properties;
+    }
+
+    public ArtifactType getArtifactType() {
+        return artifactType;
+    }
+
+    @Required
+    public void setArtifactType(ArtifactType artifactType) {
+        this.artifactType = artifactType;
     }
 
     @Required
@@ -81,46 +91,20 @@ public class AmazonS3Publisher extends BasePublisher implements IPublisher<IFile
         this.properties = properties;
     }
 
-    @Required
-    public void setTempDirectory(File tempDirectory) {
-        this.tempDirectory = tempDirectory;
+    private String getUrlPrefix() {
+        return properties.getProperty(Pair.create(getArtifactType(), "urlPrefix"));
     }
-
-    private String getUrlPrefix(ArtifactType type) {
-        Pair<ArtifactType, String> key = Pair.create(type, "urlPrefix");
-        return properties.getProperty(key);
-    }
-//
-//    @Required
-//    public void setUrlPrefix(String urlPrefix) {
-//        this.urlPrefix = urlPrefix;
-//    }
 
     public String getAccessKey() {
-        return accessKey;
+        return properties.getProperty(Pair.create(getArtifactType(), "accessKey"));
     }
 
     public String getBucketName() {
-        return bucketName;
-    }
-
-    @Required
-    public void setBucketName(String bucketName) {
-        this.bucketName = bucketName;
-    }
-
-    @Required
-    public void setAccessKey(String accessKey) {
-        this.accessKey = accessKey;
+        return properties.getProperty(Pair.create(getArtifactType(), "bucketName"));
     }
 
     public String getSecretKey() {
-        return secretKey;
-    }
-
-    @Required
-    public void setSecretKey(String secretKey) {
-        this.secretKey = secretKey;
+        return properties.getProperty(Pair.create(getArtifactType(), "secretKey"));
     }
 
     public S3Service getS3Service() {
@@ -134,7 +118,7 @@ public class AmazonS3Publisher extends BasePublisher implements IPublisher<IFile
     @PostConstruct
     public void init() {
         try {
-            awsCredentials = new AWSCredentials(accessKey, secretKey);
+            awsCredentials = new AWSCredentials(getAccessKey(), getSecretKey());
             s3Service = new RestS3Service(awsCredentials);
             S3Bucket[] myBuckets = s3Service.listAllBuckets();
             if (logger.isDebugEnabled()) {
@@ -214,13 +198,13 @@ public class AmazonS3Publisher extends BasePublisher implements IPublisher<IFile
         String defaultLocation = metaData.getLocation();
         if (StringUtils.isBlank(defaultLocation)) {
             final StringBuilder builder = new StringBuilder();
-            String location = builder.append(getUrlPrefix(metaData.getArtifactType())).append(HTTP_SEPARATOR).append(artifactDirectoryName).append(HTTP_SEPARATOR).append(uniqueFileName).toString();
+            String location = builder.append(getUrlPrefix()).append(HTTP_SEPARATOR).append(artifactDirectoryName).append(HTTP_SEPARATOR).append(uniqueFileName).toString();
             metaData.setLocation(location);
         }
     }
 
     private String saveToDisk(String artifactDirectoryName, InputStream artifact, String uniqueFileName) {
-        File fullPath = new File(tempDirectory + File.separator + artifactDirectoryName);
+        File fullPath = new File(getTempDirectory() + File.separator + artifactDirectoryName);
         if (!fullPath.exists()) {
             fullPath.mkdirs();
         }

@@ -18,6 +18,7 @@ package org.yestech.publish.objectmodel;
  * @version $Revision: $
  */
 public enum ArtifactType {
+    ALL,
     IMAGE,
     VIDEO,
     AUDIO,
