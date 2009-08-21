@@ -84,6 +84,9 @@ public class BitgravityWebdavPublisher extends BasePublisher implements IPublish
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
 
+        } catch (RuntimeException e) {
+            logger.error(e.getMessage(), e);
+            throw e;
         } finally {
             if (logger.isInfoEnabled()) {
                 logger.info("removing file: " + tempFileFqn);
