@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
 import static org.yestech.lib.util.Pair.create;
 import org.yestech.lib.util.Pair;
-import org.yestech.lib.util.EncoderUtil;
 import org.yestech.publish.objectmodel.*;
 import static org.yestech.publish.util.PublishUtils.generateUniqueIdentifier;
 import org.yestech.publish.util.PublishUtils;
@@ -116,13 +115,12 @@ public class BitgravityWebdavPublisher extends BasePublisher implements IPublish
     }
 
     protected String getFilePublishUrl(String artifactDirectoryName, String uniqueFileName) {
-        String u = new StringBuilder(getWebDavPrefix())
+        return new StringBuilder(getWebDavPrefix())
                 .append(HTTP_SEPARATOR)
                 .append(artifactDirectoryName)
                 .append(HTTP_SEPARATOR)
                 .append(uniqueFileName)
                 .toString();
-        return EncoderUtil.uriEncode(u);
     }
 
     protected String getDirectoryPublishUrl(String artifactDirectoryName) {
