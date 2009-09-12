@@ -7,6 +7,40 @@
     <version>1.0.0-SNAPSHOT</version>
     <name>YES Publish</name>
     <url>http://yestech.org</url>
+    <scm>
+        <connection>scm:git:http://github.com/yestech/yespublish/tree/master</connection>
+        <developerConnection>scm:git:http://github.com/yestech/yespublish/tree/master</developerConnection>
+    </scm>
+    <organization>
+        <name>YES Technology Association</name>
+        <url>http://yestech.org</url>
+    </organization>
+    <licenses>
+        <license>
+            <name>LGPLv3</name>
+            <url>http://opensource.org/licenses/lgpl-3.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <id>artie</id>
+            <name>Artie Copeland</name>
+            <email>artie@yestech.org</email>
+            <roles>
+                <role>architect</role>
+                <role>developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>aj</id>
+            <name>AJ Wright</name>
+            <email>ayax79@gmail.com</email>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
+    </developers>
     <properties>
         <tim.masterworker.version>2.1.1</tim.masterworker.version>
         <tim.pipes.version>2.1.1</tim.pipes.version>
@@ -234,18 +268,15 @@
     </profiles>
     <repositories>
         <repository>
-            <id>yestech.thirdparty</id>
-            <url>http://repo.yestech.org/content/repositories/thirdparty</url>
-        </repository>
-        <repository>
-            <id>blackbox.thirdparty</id>
-            <url>http://blackbox.yestech.org/content/repositories/thirdparty</url>
+            <id>yestech-snapshots</id>
+            <name>YES Technology Snapshot Repository</name>
+            <url>http://oss.sonatype.org/content/repositories/github-snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
         </repository>
         <!--<repository>-->
         <!--<name>jets3t</name>-->
@@ -265,6 +296,17 @@
     </repositories>
     <pluginRepositories>
         <pluginRepository>
+            <id>yestech-snapshots</id>
+            <name>YES Technology Snapshot Repository</name>
+            <url>http://oss.sonatype.org/content/repositories/github-snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+        <pluginRepository>
             <id>terracotta-repository</id>
             <url>http://www.terracotta.org/download/reflector/maven2</url>
             <releases>
@@ -277,14 +319,14 @@
     </pluginRepositories>
     <distributionManagement>
         <repository>
-            <id>yestech.release</id>
-            <name>Yestech release repository</name>
-            <url>http://repo.yestech.org/content/repositories/releases</url>
+            <id>yestech-releases</id>
+            <name>YES Technology Release Repository</name>
+            <url>http://oss.sonatype.org/content/repositories/github-releases/</url>
         </repository>
         <snapshotRepository>
-            <id>yestech.snapshots</id>
-            <name>Yestech snapshots repository</name>
-            <url>http://repo.yestech.org/content/repositories/snapshots</url>
+            <id>yestech-snapshots</id>
+            <name>YES Technology Snapshot Repository</name>
+            <url>http://oss.sonatype.org/content/repositories/github-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 </project>
