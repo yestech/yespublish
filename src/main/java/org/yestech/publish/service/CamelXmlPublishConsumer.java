@@ -78,7 +78,6 @@ public class CamelXmlPublishConsumer implements IPublishConsumer {
     public void process(Exchange exchange) {
         final Throwable throwable = exchange.getException();
         if (throwable == null) {
-//            final Message newMessage = new DefaultMessage();
             final Message message = exchange.getIn();
             String fileLocation = "";
             try {

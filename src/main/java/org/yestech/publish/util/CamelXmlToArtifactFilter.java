@@ -29,9 +29,7 @@ public class CamelXmlToArtifactFilter {
     public void filter(Exchange exchange) {
         final Throwable throwable = exchange.getException();
         if (throwable == null) {
-//            final Message newMessage = new DefaultMessage();
             final Message message = exchange.getIn();
-            String fileLocation = "";
             try {
                 String xmlArtifact = message.getBody(String.class);
                 final IArtifact tempArtifact = (IArtifact) XmlUtils.fromXml(xmlArtifact);
