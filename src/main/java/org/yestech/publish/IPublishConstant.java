@@ -25,4 +25,6 @@ public interface IPublishConstant {
     final public static String CONTENT_SIZE = META_DATA + "_size";
     final public static String FILE_NAME = META_DATA + "_fileName";
     final public static String URL = META_DATA + "_url";
+    final public static String RAW_XML_ARTIFACT = "__raw_xml_artifact__"; 
 }
+

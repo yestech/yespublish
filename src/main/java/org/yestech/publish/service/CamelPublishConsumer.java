@@ -35,7 +35,8 @@ import java.io.*;
 
 /**
  * A camel based processor that assumes the body of a {@link org.apache.camel.Message} is of type
- * {@link IArtifact}.
+ * {@link IArtifact}.  It assumes the message body is already of type {@link org.yestech.publish.objectmodel.IArtifact}.
+ * This is used for example after the {@link org.yestech.publish.util.CamelXmlToArtifactFilter} has been applied.
  *
  * @author Artie Copeland
  * @version $Revision: $
@@ -93,7 +94,9 @@ public class CamelPublishConsumer implements IPublishConsumer {
                     recieve(artifact);
                 }
                 if (headerParameters != null) {
-                    message.setHeaders(headerParameters);
+                    for (Map.Entry<String, Object> entry : headerParameters.entrySet()) {
+                        message.setHeader(entry.getKey(), entry.getValue());
+                    }
                 }
             } catch (Exception e) {
                 logger.error("error retrieving artifact...", e);

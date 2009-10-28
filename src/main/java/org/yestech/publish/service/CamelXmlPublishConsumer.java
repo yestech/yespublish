@@ -36,7 +36,8 @@ import java.io.*;
 
 /**
  * A camel based processor that assumes the body of a {@link org.apache.camel.Message} is of type
- * {@link org.yestech.publish.objectmodel.IArtifact}.
+ * {@link org.yestech.publish.objectmodel.IArtifact}.  The consumer converts the raw message to an {@link org.yestech.publish.objectmodel.IArtifact}
+ * then puts it back into the exchange, after doing that it publishes the {@link org.yestech.publish.objectmodel.IArtifact}.
  *
  * @author Artie Copeland
  * @version $Revision: $
@@ -105,7 +106,9 @@ public class CamelXmlPublishConsumer implements IPublishConsumer {
                     recieve(artifact);
                 }
                 if (headerParameters != null) {
-                    message.setHeaders(headerParameters);
+                    for (Map.Entry<String, Object> entry : headerParameters.entrySet()) {
+                        message.setHeader(entry.getKey(), entry.getValue());
+                    }
                 }
             } catch (Exception e) {
                 logger.error("error retrieving artifact...", e);
