@@ -4,7 +4,6 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.yestech.publish.objectmodel.IArtifact;
 import org.yestech.publish.objectmodel.TerracottaPipeArtifact;
-import org.yestech.publish.objectmodel.IFileArtifact;
 import org.yestech.publish.IPublishConstant;
 import static org.yestech.publish.util.PublishUtils.translateArtifact;
 import org.yestech.lib.xml.XmlUtils;
