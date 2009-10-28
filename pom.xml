@@ -50,6 +50,11 @@
         </developer>
     </developers>
     <properties>
+        <spring.version>2.5.6.SEC01</spring.version>
+        <yesepisodic.version>1.0.0-SNAPSHOT</yesepisodic.version>
+        <yeslib.version>1.0.0</yeslib.version>
+        <camel.version>2.0.0</camel.version>
+        <apache-activemq.version>5.2.0</apache-activemq.version>
         <tim.masterworker.version>2.1.0</tim.masterworker.version>
         <tim.pipes.version>2.1.0</tim.pipes.version>
         <tim-annotations.version>1.4.0</tim-annotations.version>
@@ -59,7 +64,7 @@
             <groupId>org.terracotta.modules</groupId>
             <artifactId>tim-annotations</artifactId>
             <version>${tim-annotations.version}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.terracotta.modules</groupId>
@@ -71,7 +76,7 @@
             <groupId>org.terracotta.modules</groupId>
             <artifactId>tim-masterworker</artifactId>
             <version>${tim.masterworker.version}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>xalan</groupId>
@@ -92,7 +97,7 @@
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-jms_1.1_spec</artifactId>
             <version>1.1.1</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
@@ -102,12 +107,13 @@
         <dependency>
             <groupId>org.yestech</groupId>
             <artifactId>yeslib</artifactId>
-            <version>1.0.0</version>
+            <version>${yeslib.version}</version>
         </dependency>
         <dependency>
             <groupId>org.yestech</groupId>
             <artifactId>yesepisodic</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${yesepisodic.version}</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.apache.velocity</groupId>
@@ -122,19 +128,21 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jms</artifactId>
-            <version>2.5.6.SEC01</version>
+            <version>${spring.version}</version>
+            <optional>true</optional>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.apache.activemq</groupId>-->
-            <!--<artifactId>activemq-core</artifactId>-->
-            <!--<version>5.2.0</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.apache.activemq</groupId>-->
-            <!--<artifactId>activemq-all</artifactId>-->
-            <!--<version>5.2.0</version>-->
-            <!--<scope>test</scope>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-core</artifactId>
+            <version>${apache-activemq.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-all</artifactId>
+            <version>${apache-activemq.version}</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.apache.xbean</groupId>
             <artifactId>xbean-spring</artifactId>
@@ -159,7 +167,7 @@
         <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-core</artifactId>
-            <version>2.0.0</version>
+            <version>${camel.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
