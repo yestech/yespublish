@@ -13,12 +13,11 @@
  */
 package org.yestech.publish.service;
 
-import org.yestech.publish.objectmodel.IArtifactMetaData;
 import org.yestech.publish.objectmodel.IArtifact;
 
-import java.io.InputStream;
-
 /**
+ * Doesnt do anything it is a No Operation
+ * 
  * @author Artie Copeland
  * @version $Revision: $
  */

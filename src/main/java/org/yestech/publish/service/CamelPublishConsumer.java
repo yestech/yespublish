@@ -34,7 +34,7 @@ import java.util.Map;
 import java.io.*;
 
 /**
- * A camel based processor that assumes the body of a {@link org.apache.camel.Message} is of type
+ * A camel based consumer that assumes the body of a {@link org.apache.camel.Message} is of type
  * {@link IArtifact}.  It assumes the message body is already of type {@link org.yestech.publish.objectmodel.IArtifact}.
  * This is used for example after the {@link org.yestech.publish.util.CamelXmlToArtifactFilter} has been applied.
  *
