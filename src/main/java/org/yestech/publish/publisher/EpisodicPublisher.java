@@ -93,19 +93,6 @@ public class EpisodicPublisher extends BasePublisher implements IPublisher<IFile
                     ea.setEpisodeId(episodeId);
 
                     if (persister != null) {
-                        // load up the loacation (the embed code from episodic)
-                        Episodes episodes = episodicService.getEpisodes(null, new String[]{episodeId}, null, null, null, null, null, null, null, null, null, null, null);
-                        if (!episodes.getEpisode().isEmpty()) {
-                            Episode episode = episodes.getEpisode().get(0);
-                            if (episode != null) {
-                                Player defaultPlayer = episode.getDefaultPlayer();
-                                if (defaultPlayer != null) {
-                                    metaData.setLocation(defaultPlayer.getEmbedCode());
-                                }
-                            }
-                        }
-
-
                         persister.save(ea);
                     } else {
                         logger.warn("Artifact is an IEpisodicArtfact, but no IEpisodicArtifactPersister was supplied.");
