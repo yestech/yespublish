@@ -1,45 +1,37 @@
 package org.yestech.publish.publisher;
 
-import org.apache.commons.httpclient.Credentials;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
-import org.apache.commons.httpclient.methods.PutMethod;
-import org.apache.commons.httpclient.methods.RequestEntity;
-import org.apache.commons.lang.StringUtils;
-import static org.apache.commons.lang.StringUtils.isBlank;
-import static org.apache.commons.io.FileUtils.openOutputStream;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
-import static org.yestech.lib.util.Pair.create;
+import org.yestech.episodic.DefaultEpisodicService;
+import org.yestech.episodic.EpisodicService;
 import org.yestech.lib.util.Pair;
 import org.yestech.publish.objectmodel.*;
-import org.yestech.publish.objectmodel.episodic.IEpisodicArtifactPersister;
 import org.yestech.publish.objectmodel.episodic.IEpisodicArtifact;
-import static org.yestech.publish.util.PublishUtils.generateUniqueIdentifier;
+import org.yestech.publish.objectmodel.episodic.IEpisodicArtifactPersister;
 import org.yestech.publish.util.PublishUtils;
-import org.yestech.publish.publisher.webdav.MkColMethod;
-import org.yestech.episodic.EpisodicService;
-import org.yestech.episodic.DefaultEpisodicService;
-import org.yestech.episodic.objectmodel.Episodes;
-import org.yestech.episodic.objectmodel.Episode;
-import org.yestech.episodic.objectmodel.Player;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import static org.apache.commons.io.FileUtils.openOutputStream;
+import static org.apache.commons.lang.StringUtils.isBlank;
+import static org.yestech.lib.util.Pair.create;
+import static org.yestech.publish.util.PublishUtils.generateUniqueIdentifier;
 
 /**
  * Publishes videos to episodic by creating a unique episode with 1 asset under a given show.
- *
+ * <p/>
  * <br />
  * <ul>
  * <li>secret - The episodic secret key.</li>
  * <li>api_key - The episodic api key</ul>
  * <li>show_id - The episodic show to publish artifacts as episodes too.</li>
  * </ul>
- *
+ * <p/>
  * Optionally It is possible to save the episodeId and assetId back to the artifact if desired.
  * The following must be done in order for this functionality to work:
  * <ol>
@@ -65,6 +57,10 @@ public class EpisodicPublisher extends BasePublisher implements IPublisher<IFile
 
     @Override
     public void publish(IFileArtifact artifact) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("EpisodicPublisher called for " + artifact);
+        }
+
         IFileArtifactMetaData metaData = artifact.getArtifactMetaData();
         InputStream artifactStream = artifact.getStream();
 
@@ -85,7 +81,8 @@ public class EpisodicPublisher extends BasePublisher implements IPublisher<IFile
             String assetId = episodicService.createAsset(getShowId(), uniqueFileName, tempFile);
 
             if (assetId != null || !"".equals(assetId)) {
-                String episodeId = episodicService.createEpisode(getShowId(), uniqueFileName, new String[]{assetId}, true, null, getPingUrl());
+                String episodeId = episodicService.createEpisode(getShowId(), uniqueFileName,
+                        new String[]{assetId}, true, null, getPingUrl());
 
                 if (artifact instanceof IEpisodicArtifact) {
                     IEpisodicArtifact ea = (IEpisodicArtifact) artifact;
@@ -147,6 +144,14 @@ public class EpisodicPublisher extends BasePublisher implements IPublisher<IFile
         return properties.getProperty(create(getArtifactType(), "ping_url"));
     }
 
+    public String proxyHost() {
+        return properties.getProperty(create(getArtifactType(), "proxy_host"));
+    }
+
+    public String proxyPort() {
+        return properties.getProperty(create(getArtifactType(), "proxy_port"));
+    }
+
     public ArtifactType getArtifactType() {
         return artifactType;
     }
@@ -184,6 +189,12 @@ public class EpisodicPublisher extends BasePublisher implements IPublisher<IFile
     }
 
     protected EpisodicService buildEpisodicService() {
-        return new DefaultEpisodicService(getSecret(), getApiKey());
+        String proxyHost = proxyHost();
+        String proxyPort = proxyPort();
+        if (proxyHost != null && proxyPort != null) {
+            return new DefaultEpisodicService(getSecret(), getApiKey(), proxyHost, Integer.parseInt(proxyPort));
+        } else {
+            return new DefaultEpisodicService(getSecret(), getApiKey());
+        }
     }
 }
