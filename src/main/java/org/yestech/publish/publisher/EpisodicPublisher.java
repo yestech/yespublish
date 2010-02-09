@@ -84,8 +84,8 @@ public class EpisodicPublisher extends BasePublisher implements IPublisher<IFile
                 String episodeId = episodicService.createEpisode(getShowId(), uniqueFileName,
                         new String[]{assetId}, true, null, getPingUrl());
 
-                if (artifact instanceof IEpisodicArtifact) {
-                    IEpisodicArtifact ea = (IEpisodicArtifact) artifact;
+                if (metaData instanceof IEpisodicArtifact) {
+                    IEpisodicArtifact ea = (IEpisodicArtifact) metaData;
                     ea.setAssetId(assetId);
                     ea.setEpisodeId(episodeId);
 
