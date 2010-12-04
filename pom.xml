@@ -45,7 +45,7 @@
         <developer>
             <id>aj</id>
             <name>AJ Wright</name>
-            <email>ayax79@gmail.com</email>
+            <email>http://mailhide.recaptcha.net/d?k=01XGJqL3AfJ8OIctt55OP0EQ==&amp;c=yMN1KnVMTvKWW8izuRB-8ddgh1w0xLcBydfczqiwt2E=</email>
             <roles>
                 <role>developer</role>
             </roles>
@@ -57,7 +57,7 @@
     </ciManagement>
     <properties>
         <spring.version>2.5.6.SEC01</spring.version>
-        <yesepisodic.version>1.0.0</yesepisodic.version>
+        <yesepisodic.version>1.1.0</yesepisodic.version>
         <yeslib.version>1.2.0</yeslib.version>
         <camel.version>2.5.0</camel.version>
         <apache-activemq.version>5.3.1</apache-activemq.version>
