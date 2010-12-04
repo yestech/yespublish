@@ -4,7 +4,7 @@
     <groupId>org.yestech</groupId>
     <artifactId>yespublish</artifactId>
     <packaging>jar</packaging>
-    <version>1.1.0</version>
+    <version>1.2.0-SNAPSHOT</version>
     <name>YES Publish</name>
     <url>http://yestech.org/sites/yespublish/</url>
     <description>Framework to publish ascii or binary data
