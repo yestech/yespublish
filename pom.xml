@@ -58,7 +58,7 @@
         <spring.version>2.5.6.SEC01</spring.version>
         <yesepisodic.version>1.1.0</yesepisodic.version>
         <yeslib.version>1.2.0</yeslib.version>
-        <camel.version>2.5.0</camel.version>
+        <camel.version>2.24.0</camel.version>
         <apache-activemq.version>5.3.1</apache-activemq.version>
         <tim.masterworker.version>2.1.0</tim.masterworker.version>
         <tim.pipes.version>2.1.0</tim.pipes.version>
